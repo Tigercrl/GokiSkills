@@ -46,10 +46,10 @@
   "skill.gokiskills.dodge.message": "[Dodged]",
   "skill.gokiskills.dodge.name": "Dodge",
 
-  "skill.gokiskills.endothermy.desc": "Take %s%% less damage from fire and freezing",
+  "skill.gokiskills.endothermy.desc": "Take %s%% less damage from burning and freezing",
   "skill.gokiskills.endothermy.name": "Endothermy",
 
-  "skill.gokiskills.feather_falling.desc": "Take %s%% less damage while falling",
+  "skill.gokiskills.feather_falling.desc": "Take %s%% less damage from falling",
   "skill.gokiskills.feather_falling.name": "Feather Falling",
 
   "skill.gokiskills.fencing.desc": "Deal %s%% more damage with swords",
@@ -64,13 +64,13 @@
   "skill.gokiskills.health.desc": "Increase %s health",
   "skill.gokiskills.health.name": "Health",
 
-  "skill.gokiskills.jump_boost.desc": "Jump %s%% higher.",
+  "skill.gokiskills.jump_boost.desc": "Jump %s%% higher",
   "skill.gokiskills.jump_boost.name": "Jump Boost",
 
-  "skill.gokiskills.knockback_resistence.desc": "Take %s%% less damage from knockbacks",
+  "skill.gokiskills.knockback_resistence.desc": "Reduce %s%% knockback",
   "skill.gokiskills.knockback_resistence.name": "Knockback Resistance",
 
-  "skill.gokiskills.leaper.desc": "Jump %s%% farther.",
+  "skill.gokiskills.leaper.desc": "Jump %s%% farther",
   "skill.gokiskills.leaper.name": "Leaper",
 
   "skill.gokiskills.mining.desc": "Mine %s%% faster",
@@ -83,7 +83,7 @@
   "skill.gokiskills.one_hit.message": "[One Hit]",
   "skill.gokiskills.one_hit.name": "One Hit Killing",
 
-  "skill.gokiskills.protection.desc": "Take %s%% less damage from mob attack",
+  "skill.gokiskills.protection.desc": "Take %s%% less damage from mob attacks",
   "skill.gokiskills.protection.name": "Damage Absorption",
 
   "skill.gokiskills.shearing.desc": "Shear %s%% faster",
