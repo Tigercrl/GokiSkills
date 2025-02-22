@@ -1,0 +1,94 @@
+{
+  "gui.gokiskills.cost": "Costs %s experience points",
+  "gui.gokiskills.downgrade": "Click to downgrade",
+  "gui.gokiskills.downgrade.fast": "Click to downgrade %s levels",
+  "gui.gokiskills.downgrade.no": "You cannot downgrade anymore!",
+  "gui.gokiskills.help.1": "Click an icon to upgrade, Ctrl + Click to downgrade",
+  "gui.gokiskills.help.1.macos": "Click an icon to upgrade, Command + Click to downgrade",
+  "gui.gokiskills.help.2": "or Shift + Click to upgrade as much as possible!",
+  "gui.gokiskills.loading.level": "Loading...",
+  "gui.gokiskills.loading.menu": "Fetching data from server...",
+  "gui.gokiskills.max_level": "Max!",
+  "gui.gokiskills.return": "Returns %s experience points",
+  "gui.gokiskills.title": "Goki Skills - Skills Menu",
+  "gui.gokiskills.upgrade": "Click to upgrade",
+  "gui.gokiskills.upgrade.fast": "Click to upgrade %s levels",
+  "gui.gokiskills.upgrade.no": "You cannot upgrade yet!",
+  "gui.gokiskills.xp": "Current experience: %s points",
+
+
+  "key.categories.gokiskills": "Goki Skills",
+  "key.gokiskills.open": "Open Skills Menu",
+
+
+  "skill.gokiskills.alchemy.desc": "Smelt item %s%% faster",
+  "skill.gokiskills.alchemy.name": "Alchemy",
+
+  "skill.gokiskills.archer.desc": "Deal %s%% more damage with projectiles",
+  "skill.gokiskills.archer.name": "Archer",
+
+  "skill.gokiskills.blast_protection.desc": "Take %s%% less damage from explosions",
+  "skill.gokiskills.blast_protection.name": "Blast Protection",
+
+  "skill.gokiskills.boxing.desc": "Deal %s%% more damage when not using weapons",
+  "skill.gokiskills.boxing.name": "Boxing",
+
+  "skill.gokiskills.chopping.desc": "Chop %s%% faster",
+  "skill.gokiskills.chopping.name": "Chopping",
+
+  "skill.gokiskills.climbing.desc": "Climb %s%% faster",
+  "skill.gokiskills.climbing.name": "Climbing",
+
+  "skill.gokiskills.digging.desc": "Dig %s%% faster",
+  "skill.gokiskills.digging.name": "Digging",
+
+  "skill.gokiskills.dodge.desc": "Have a %s%% chance of avoiding damage",
+  "skill.gokiskills.dodge.message": "[Dodged]",
+  "skill.gokiskills.dodge.name": "Dodge",
+
+  "skill.gokiskills.endothermy.desc": "Take %s%% less damage from fire and freezing",
+  "skill.gokiskills.endothermy.name": "Endothermy",
+
+  "skill.gokiskills.feather_falling.desc": "Take %s%% less damage while falling",
+  "skill.gokiskills.feather_falling.name": "Feather Falling",
+
+  "skill.gokiskills.fencing.desc": "Deal %s%% more damage with swords",
+  "skill.gokiskills.fencing.name": "Fencing",
+
+  "skill.gokiskills.fortune.desc": "Increase chances of specific item drops",
+  "skill.gokiskills.fortune.name": "Fortune",
+
+  "skill.gokiskills.harvesting.desc": "Harvest %s%% faster",
+  "skill.gokiskills.harvesting.name": "Harvesting",
+
+  "skill.gokiskills.health.desc": "Increase %s health",
+  "skill.gokiskills.health.name": "Health",
+
+  "skill.gokiskills.jump_boost.desc": "Jump %s%% higher.",
+  "skill.gokiskills.jump_boost.name": "Jump Boost",
+
+  "skill.gokiskills.knockback_resistence.desc": "Take %s%% less damage from knockbacks",
+  "skill.gokiskills.knockback_resistence.name": "Knockback Resistance",
+
+  "skill.gokiskills.leaper.desc": "Jump %s%% farther.",
+  "skill.gokiskills.leaper.name": "Leaper",
+
+  "skill.gokiskills.mining.desc": "Mine %s%% faster",
+  "skill.gokiskills.mining.name": "Mining",
+
+  "skill.gokiskills.ninja.desc": "Move %s%% faster and deal %s%% more damage while sneaking",
+  "skill.gokiskills.ninja.name": "Ninja",
+
+  "skill.gokiskills.one_hit.desc": "Have a %s%% chance to kill a mob with less than %s%% health by one hit",
+  "skill.gokiskills.one_hit.message": "[One Hit]",
+  "skill.gokiskills.one_hit.name": "One Hit Killing",
+
+  "skill.gokiskills.protection.desc": "Take %s%% less damage from mob attack",
+  "skill.gokiskills.protection.name": "Damage Absorption",
+
+  "skill.gokiskills.shearing.desc": "Shear %s%% faster",
+  "skill.gokiskills.shearing.name": "Shearing",
+
+  "skill.gokiskills.swimming.desc": "Swim %s%% faster, reduce %s%% oxygen consumption",
+  "skill.gokiskills.swimming.name": "Swimming"
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "gokiskills",
+  "version": "${version}",
+  "name": "GokiSkills",
+  "description": "Unlock and upgrade your skills by experience points!",
+  "authors": [
+    "Tigercrl"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/gokiskills",
+    "source": "https://github.com/Tigercrl/GokiSkills",
+    "issues": "https://github.com/Tigercrl/GokiSkills/issues"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/gokiskills/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.tigercrl.gokiskills.fabric.GokiSkillsFabric"
+    ]
+  },
+  "mixins": [
+    "gokiskills.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "architectury": ">=9.2.14",
+    "fabric-api": "*"
+  }
+}

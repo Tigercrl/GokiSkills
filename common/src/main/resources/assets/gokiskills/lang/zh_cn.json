@@ -1,0 +1,94 @@
+{
+  "gui.gokiskills.cost": "升级需花费 %s 点经验值",
+  "gui.gokiskills.downgrade": "点击以降级",
+  "gui.gokiskills.downgrade.fast": "点击以降级 %s 级",
+  "gui.gokiskills.downgrade.no": "你无法继续降级！",
+  "gui.gokiskills.help.1": "点击以升级技能，按住 Ctrl 点击以降级",
+  "gui.gokiskills.help.1.macos": "点击图标以升级技能，按住 Command 点击以降级",
+  "gui.gokiskills.help.2": "或按住 Shift 点击以尽可能的升级！",
+  "gui.gokiskills.loading.level": "加载中...",
+  "gui.gokiskills.loading.menu": "正在从服务器获取数据...",
+  "gui.gokiskills.max_level": "已满级！",
+  "gui.gokiskills.return": "降级可返还 %s 点经验值",
+  "gui.gokiskills.title": "技能专精 - 技能菜单",
+  "gui.gokiskills.upgrade": "点击以升级",
+  "gui.gokiskills.upgrade.fast": "点击以升级 %s 级",
+  "gui.gokiskills.upgrade.no": "你还不能升级！",
+  "gui.gokiskills.xp": "当前经验值：%s 点",
+
+
+  "key.categories.gokiskills": "技能专精",
+  "key.gokiskills.open": "打开技能菜单",
+
+
+  "skill.gokiskills.alchemy.desc": "熔炼物品速度增加 %s%%",
+  "skill.gokiskills.alchemy.name": "炼金",
+
+  "skill.gokiskills.archer.desc": "弹射物伤害增加 %s%%",
+  "skill.gokiskills.archer.name": "弓术",
+
+  "skill.gokiskills.blast_protection.desc": "爆炸伤害减免 %s%%",
+  "skill.gokiskills.blast_protection.name": "坚硬",
+
+  "skill.gokiskills.boxing.desc": "徒手伤害增加 %s%%",
+  "skill.gokiskills.boxing.name": "武道",
+
+  "skill.gokiskills.chopping.desc": "砍伐速度增加 %s%%",
+  "skill.gokiskills.chopping.name": "砍伐",
+
+  "skill.gokiskills.climbing.desc": "攀爬速度增加 %s%%",
+  "skill.gokiskills.climbing.name": "攀爬",
+
+  "skill.gokiskills.digging.desc": "挖掘速度增加 %s%%",
+  "skill.gokiskills.digging.name": "挖掘",
+
+  "skill.gokiskills.dodge.desc": "有 %s%% 的几率躲避伤害",
+  "skill.gokiskills.dodge.message": "[已闪避]",
+  "skill.gokiskills.dodge.name": "闪避",
+
+  "skill.gokiskills.endothermy.desc": "火焰和冰冻伤害减免 %s%%",
+  "skill.gokiskills.endothermy.name": "恒温",
+
+  "skill.gokiskills.feather_falling.desc": "摔落伤害减免 %s%%",
+  "skill.gokiskills.feather_falling.name": "羽落",
+
+  "skill.gokiskills.fencing.desc": "剑伤害增加 %s%%",
+  "skill.gokiskills.fencing.name": "剑术",
+
+  "skill.gokiskills.fortune.desc": "增加特定掉落物数量的期望值",
+  "skill.gokiskills.fortune.name": "时运",
+
+  "skill.gokiskills.harvesting.desc": "收割速度增加 %s%%",
+  "skill.gokiskills.harvesting.name": "收割",
+
+  "skill.gokiskills.health.desc": "增加 %s 点生命值",
+  "skill.gokiskills.health.name": "回春",
+
+  "skill.gokiskills.jump_boost.desc": "跳跃高度增加 %s%%",
+  "skill.gokiskills.jump_boost.name": "翔空",
+
+  "skill.gokiskills.knockback_resistence.desc": "击退效果减免 %s%%",
+  "skill.gokiskills.knockback_resistence.name": "磐石",
+
+  "skill.gokiskills.leaper.desc": "跳跃距离增加 %s%%",
+  "skill.gokiskills.leaper.name": "踏霄",
+
+  "skill.gokiskills.mining.desc": "开采速度增加 %s%%",
+  "skill.gokiskills.mining.name": "开采",
+
+  "skill.gokiskills.ninja.desc": "潜行时移动速度增加 %s%%，攻击伤害增加 %s%%",
+  "skill.gokiskills.ninja.name": "匿影",
+
+  "skill.gokiskills.one_hit.desc": "生物生命值低于 %2$s%% 时有 %s%% 的几率一击斩杀",
+  "skill.gokiskills.one_hit.message": "[斩杀]",
+  "skill.gokiskills.one_hit.name": "斩杀",
+
+  "skill.gokiskills.protection.desc": "生物攻击伤害减免 %s%%",
+  "skill.gokiskills.protection.name": "噬伤",
+
+  "skill.gokiskills.shearing.desc": "修剪速度增加 %s%%",
+  "skill.gokiskills.shearing.name": "修剪",
+
+  "skill.gokiskills.swimming.desc": "游泳速度增加 %s%%，氧气消耗减少 %s%%",
+  "skill.gokiskills.swimming.name": "潜渊"
+}
