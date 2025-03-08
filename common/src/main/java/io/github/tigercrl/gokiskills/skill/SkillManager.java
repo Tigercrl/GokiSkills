@@ -89,7 +89,7 @@ public class SkillManager {
         Map<String, JsonObject> configs = new HashMap<>();
         SKILL.entrySet().forEach(entry -> {
             try {
-                configs.put(entry.getKey().location().toString(), ConfigUtils.toJsonObject(entry.getValue().getConfigClass().getDeclaredConstructor().newInstance()));
+                configs.put(entry.getKey().location().toString(), ConfigUtils.toJsonObject(entry.getValue().getDefaultConfig()));
             } catch (Exception e) {
                 LOGGER.warn("Error creating config for skill {}", entry.getKey().location(), e);
             }

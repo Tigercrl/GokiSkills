@@ -12,27 +12,24 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class Skill implements ISkill {
-    public static final Function<Integer, Integer> DEFAULT_CALC_COST = (level) ->
-            Math.toIntExact(Math.round((Math.pow(level, 1.6) + 6 + level) * GokiSkills.getConfig().multiplier.costMultiplier));
+    public static final Function<Integer, Double> DEFAULT_CALC_COST = (level) -> Math.pow(level, 1.6) + 6 + level;
 
-    public static final Function<Integer, Integer> DEFAULT_CALC_RETURN = (level) ->
-            Math.toIntExact(Math.round(DEFAULT_CALC_COST.apply(level - 1) * GokiSkills.getConfig().multiplier.downgradeReturnFactor));
+    public static final BiFunction<Integer, Integer, Double> DEFAULT_CALC_RETURN = (level, cost) -> Double.valueOf(cost);
 
-    public static final Function<Integer, Double> DEFAULT_CALC_BONUS = (level) ->
-            0.04 * level * GokiSkills.getConfig().multiplier.bonusMultiplier;
+    public static final Function<Integer, Double> DEFAULT_CALC_BONUS = (level) -> 0.04 * level;
 
     private final ResourceLocation location;
     private final ResourceLocation category;
-    private final int maxLevel;
-    private final int defaultLevel;
-    private final int minLevel;
-    private final Function<Integer, Integer> calcCost;
-    private final Function<Integer, Integer> calcReturn;
-    private final @Nullable Function<Integer, Double> calcBonus;
+    private final Function<Integer, Double> calcCost;
+    private final BiFunction<Integer, Integer, Double> calcReturn;
+    @Nullable
+    private final Function<Integer, Double> calcBonus;
     private final SkillTexture icon;
     private final SkillTexture frame;
     private final SkillTexture overlay;
@@ -40,14 +37,12 @@ public class Skill implements ISkill {
     private final Component name;
     private final SkillDescription description;
     private final Class<? extends GokiSkillConfig> configClass;
+    private final GokiSkillConfig defaultConfig;
 
     public Skill(
             ResourceLocation category,
-            int maxLevel,
-            int defaultLevel,
-            int minLevel,
-            Function<Integer, Integer> calcCost,
-            Function<Integer, Integer> calcReturn,
+            Function<Integer, Double> calcCost,
+            BiFunction<Integer, Integer, Double> calcReturn,
             @Nullable Function<Integer, Double> calcBonus,
             SkillTexture icon,
             SkillTexture frame,
@@ -55,14 +50,10 @@ public class Skill implements ISkill {
             SkillTexture background,
             Component name,
             SkillDescription description,
-            Class<? extends GokiSkillConfig> configClass
+            Class<? extends GokiSkillConfig> configClass,
+            GokiSkillConfig defaultConfig
     ) {
-        if (minLevel > defaultLevel || maxLevel < defaultLevel)
-            throw new IllegalArgumentException("Invalid level");
         this.category = category;
-        this.maxLevel = maxLevel;
-        this.defaultLevel = defaultLevel;
-        this.minLevel = minLevel;
         this.calcCost = calcCost;
         this.calcReturn = calcReturn;
         this.calcBonus = calcBonus;
@@ -73,6 +64,7 @@ public class Skill implements ISkill {
         this.name = name;
         this.description = description;
         this.configClass = configClass;
+        this.defaultConfig = defaultConfig;
         this.location = SkillManager.SKILL.getKey(this);
     }
 
@@ -93,34 +85,34 @@ public class Skill implements ISkill {
 
     @Override
     public int getMaxLevel() {
-        return Math.max((int) Math.round(maxLevel * GokiSkills.getConfig().multiplier.maxLevelMultiplier), 1);
+        return getConfig().maxLevel;
     }
 
     @Override
     public int getDefaultLevel() {
-        return defaultLevel;
+        return getConfig().defaultLevel;
     }
 
     @Override
     public int getMinLevel() {
-        return minLevel;
+        return getConfig().minLevel;
     }
 
     @Override
     public int calcCost(int level) {
-        return calcCost.apply(level);
+        return Math.toIntExact(Math.round(calcCost.apply(level) * getConfig().costMultiplier));
     }
 
     @Override
     public int calcReturn(int level) {
-        return calcReturn.apply(level);
+        return Math.toIntExact(Math.round(calcReturn.apply(level, calcCost(level)) * getConfig().downgradeReturnFactor));
     }
 
     @Nullable
     @Override
     public Double calcBonus(int level) {
         if (calcBonus == null) return null;
-        return calcBonus.apply(level);
+        return calcBonus.apply(level) * getConfig().bonusMultiplier;
     }
 
     @Override
@@ -167,6 +159,11 @@ public class Skill implements ISkill {
     }
 
     @Override
+    public GokiSkillConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
     public ResourceLocation getLocation() {
         return location;
     }
@@ -188,20 +185,7 @@ public class Skill implements ISkill {
     public String toString() {
         return "Skill[" +
                 "resourceLocation=" + location + ", " +
-                "category=" + category + ", " +
-                "maxLevel=" + maxLevel + ", " +
-                "defaultLevel=" + defaultLevel + ", " +
-                "minLevel=" + minLevel + ", " +
-                "calcCost=" + calcCost + ", " +
-                "calcReturn=" + calcReturn + ", " +
-                "calcBonus=" + calcBonus + ", " +
-                "icon=" + icon + ", " +
-                "frame=" + frame + ", " +
-                "overlay=" + overlay + ", " +
-                "background=" + background + ", " +
-                "name=" + name + ", " +
-                "description=" + description + ", " +
-                "configClass=" + configClass + ']';
+                "category=" + category + ']';
     }
 
     public static class Builder {
@@ -209,8 +193,8 @@ public class Skill implements ISkill {
         private int maxLevel = 25;
         private int defaultLevel = 0;
         private int minLevel = 0;
-        private Function<Integer, Integer> calcCost = DEFAULT_CALC_COST;
-        private Function<Integer, Integer> calcReturn = DEFAULT_CALC_RETURN;
+        private Function<Integer, Double> calcCost = DEFAULT_CALC_COST;
+        private BiFunction<Integer, Integer, Double> calcReturn = DEFAULT_CALC_RETURN;
         @Nullable
         private Function<Integer, Double> calcBonus = DEFAULT_CALC_BONUS;
         private SkillTexture icon;
@@ -223,6 +207,7 @@ public class Skill implements ISkill {
         private Component name;
         private SkillDescription description;
         private Class<? extends GokiSkillConfig> configClass = GokiSkillConfig.class;
+        private GokiSkillConfig defaultConfig;
 
         public Builder setCategory(ResourceLocation category) {
             this.category = category;
@@ -244,12 +229,12 @@ public class Skill implements ISkill {
             return this;
         }
 
-        public Builder setCalcCost(Function<Integer, Integer> calcCost) {
+        public Builder setCalcCost(Function<Integer, Double> calcCost) {
             this.calcCost = calcCost;
             return this;
         }
 
-        public Builder setCalcReturn(Function<Integer, Integer> calcReturn) {
+        public Builder setCalcReturn(BiFunction<Integer, Integer, Double> calcReturn) {
             this.calcReturn = calcReturn;
             return this;
         }
@@ -305,6 +290,11 @@ public class Skill implements ISkill {
             return this;
         }
 
+        public Builder setDefaultConfig(GokiSkillConfig defaultConfig) {
+            this.defaultConfig = defaultConfig;
+            return this;
+        }
+
         public Skill build() {
             if (category == null) throw new IllegalStateException("Category must be set");
             if (icon == null) throw new IllegalStateException("Icon must be set");
@@ -313,11 +303,19 @@ public class Skill implements ISkill {
             if (name == null) throw new IllegalStateException("Name must be set");
             if (description == null) throw new IllegalStateException("Description must be set");
             if (configClass == null) throw new IllegalStateException("Config class must be set");
+            if (defaultConfig == null) {
+                try {
+                    defaultConfig = configClass.getConstructor().newInstance();
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                         NoSuchMethodException e) {
+                    throw new IllegalStateException("Default config must be set");
+                }
+            }
+            defaultConfig.defaultLevel = defaultLevel;
+            defaultConfig.maxLevel = maxLevel;
+            defaultConfig.minLevel = minLevel;
             return new Skill(
                     category,
-                    maxLevel,
-                    defaultLevel,
-                    minLevel,
                     calcCost,
                     calcReturn,
                     calcBonus,
@@ -328,7 +326,8 @@ public class Skill implements ISkill {
 //                    iconBorder,
                     name,
                     description,
-                    configClass
+                    configClass,
+                    defaultConfig
             );
         }
     }

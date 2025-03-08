@@ -20,7 +20,7 @@ public class SkillsMenuScreen extends Screen {
     private static final Component LOADING = Component.translatable("gui.gokiskills.loading.menu");
     private static final Component LEFT_BOTTOM_1 = System.getProperty("os.name").toLowerCase().contains("mac") ? Component.translatable("gui.gokiskills.help.1.macos") : Component.translatable("gui.gokiskills.help.1");
     private static final Component LEFT_BOTTOM_2 = Component.translatable("gui.gokiskills.help.2");
-    public static final int HORIZONTAL_SPACING = 8;
+    public static final int HORIZONTAL_SPACING = 11;
     public static final int VERTICAL_SPACING = 20;
 
     public static int playerXp = 0;
@@ -94,6 +94,7 @@ public class SkillsMenuScreen extends Screen {
 
         SkillButton.hasControlDown = hasControlDown();
         SkillButton.hasShiftDown = hasShiftDown();
+        SkillButton.hasAltDown = hasAltDown();
 
         if (!loaded) {
             String s = LoadingDotsText.get(Util.getMillis());

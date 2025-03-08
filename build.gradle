@@ -36,6 +36,7 @@ subprojects {
             }
         }
         maven { url "https://maven.shedaniel.me/" }
+        maven { url = "https://api.modrinth.com/maven" }
     }
 
     dependencies {

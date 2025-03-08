@@ -22,6 +22,7 @@ public interface GokiNetwork {
     MessageType SKILL_FAST_UPGRADE = NET.registerC2S("skill_fast_upgrade", C2SFastUpgradeMessage::new);
     MessageType SKILL_DOWNGRADE = NET.registerC2S("skill_downgrade", C2SDowngradeMessage::new);
     MessageType SKILL_FAST_DOWNGRADE = NET.registerC2S("skill_fast_downgrade", C2SFastDowngradeMessage::new);
+    MessageType SKILL_TOGGLE = NET.registerC2S("skill_toggle", C2SToggleMessage::new);
 
     static void handleLevelOperation(ServerPlayer p, ResourceLocation location, boolean upgrade, boolean fast) {
         ISkill skill = SkillManager.SKILL.get(location);

@@ -57,11 +57,7 @@ public class Skills {
             )
             .setName(Component.translatable("skill.gokiskills.fortune.name"))
             .setDescription((level, bonus) -> Component.translatable("skill.gokiskills.fortune.desc"))
-            .setCalcCost(level -> switch (level) {
-                case 0 -> 370;
-                case 1 -> 820;
-                default -> 170;
-            })
+            .setCalcCost(level -> 25 * Math.pow(level, 2) + 25 * level + 100)
             .build();
 
     public static final ISkill HEALTH = new Skill.Builder()
@@ -88,9 +84,8 @@ public class Skills {
                             GokiUtils.doubleToString(bonus, 0)
                     )
             )
-            .setCalcCost(level ->
-                    Math.toIntExact(Math.round((Math.pow(level, 2) + 48 + level) * GokiSkills.getConfig().multiplier.costMultiplier)))
-            .setCalcBonus(level -> level * GokiSkills.getConfig().multiplier.bonusMultiplier)
+            .setCalcCost(level -> Math.pow(level, 2) + 48 + level)
+            .setCalcBonus(Double::valueOf)
             .build();
 
     public static final ISkill LEAPER = new Skill.Builder()
@@ -433,7 +428,7 @@ public class Skills {
                             GokiUtils.doubleToString(Math.min(bonus * 40, 100), 2)
                     )
             )
-            .setCalcBonus((level) -> 0.01 * level * GokiSkills.getConfig().multiplier.bonusMultiplier)
+            .setCalcBonus((level) -> 0.01 * level)
             .build();
 
     public static final ISkill BLAST_PROTECTION = new Skill.Builder()
@@ -459,7 +454,7 @@ public class Skills {
                             GokiUtils.doubleToString(Math.min(bonus * 100, 100), 2)
                     )
             )
-            .setCalcBonus(level -> 0.026 * level * GokiSkills.getConfig().multiplier.bonusMultiplier)
+            .setCalcBonus(level -> 0.026 * level)
             .build();
 
     public static final ISkill DODGE = new Skill.Builder()
@@ -486,7 +481,7 @@ public class Skills {
                             GokiUtils.doubleToString(Math.min(bonus * 100, 100), 2)
                     )
             )
-            .setCalcBonus(level -> 0.006 * level * GokiSkills.getConfig().multiplier.bonusMultiplier)
+            .setCalcBonus(level -> 0.006 * level)
             .build();
 
     public static final ISkill ENDOTHERMY = new Skill.Builder()
@@ -511,7 +506,7 @@ public class Skills {
                             GokiUtils.doubleToString(Math.min(bonus * 100, 100), 2)
                     )
             )
-            .setCalcBonus(level -> 0.026 * level * GokiSkills.getConfig().multiplier.bonusMultiplier)
+            .setCalcBonus(level -> 0.026 * level)
             .build();
 
     public static final ISkill FEATHER_FALLING = new Skill.Builder()
@@ -536,7 +531,7 @@ public class Skills {
                             GokiUtils.doubleToString(Math.min(bonus * 100, 100), 2)
                     )
             )
-            .setCalcBonus(level -> 0.026 * level * GokiSkills.getConfig().multiplier.bonusMultiplier)
+            .setCalcBonus(level -> 0.026 * level)
             .build();
 
     public static final ISkill KNOCKBACK_RESISTANCE = new Skill.Builder()
@@ -561,7 +556,7 @@ public class Skills {
                             GokiUtils.doubleToString(Math.min(bonus * 100, 100), 2)
                     )
             )
-            .setCalcBonus(level -> 0.013 * level * GokiSkills.getConfig().multiplier.bonusMultiplier)
+            .setCalcBonus(level -> 0.013 * level)
             .build();
 
     public static final ISkill PROTECTION = new Skill.Builder()
@@ -586,7 +581,7 @@ public class Skills {
                             GokiUtils.doubleToString(Math.min(bonus * 100, 100), 2)
                     )
             )
-            .setCalcBonus(level -> 0.008 * level * GokiSkills.getConfig().multiplier.bonusMultiplier)
+            .setCalcBonus(level -> 0.008 * level)
             .build();
 
     public static ISkill bootstrap(Registry<ISkill> registry) {

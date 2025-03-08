@@ -2,7 +2,6 @@ package io.github.tigercrl.gokiskills.skill;
 
 import com.mojang.logging.LogUtils;
 import io.github.tigercrl.gokiskills.GokiSkills;
-import io.github.tigercrl.gokiskills.config.ConfigException;
 import io.github.tigercrl.gokiskills.config.ConfigUtils;
 import io.github.tigercrl.gokiskills.config.GokiSkillConfig;
 import net.fabricmc.api.EnvType;
@@ -47,16 +46,11 @@ public interface ISkill {
 
     Class<? extends GokiSkillConfig> getConfigClass();
 
+    GokiSkillConfig getDefaultConfig();
+
     ResourceLocation getLocation();
 
     default <T extends GokiSkillConfig> T getConfig() {
-        T config = (T) ConfigUtils.fromJsonObject(GokiSkills.getConfig().skills.get(getResourceLocation().toString()), getConfigClass());
-        try {
-            config.validatePostLoad();
-        } catch (ConfigException e) {
-            LOGGER.error("Failed to validate skill config: {}", getResourceLocation(), e);
-            throw e;
-        }
-        return config;
+        return (T) ConfigUtils.fromJsonObject(GokiSkills.getConfig().skills.get(getResourceLocation().toString()), getConfigClass());
     }
 }

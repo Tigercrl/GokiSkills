@@ -6,9 +6,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Map;
+import java.util.Set;
 
 public class ServerSkillInfo extends SkillInfo {
     public static final Event<SkillInfoUpdate> UPDATE = EventFactory.createLoop(SkillInfoUpdate.class);
+    public static final Event<SkillInfoToggle> TOGGLE = EventFactory.createLoop(SkillInfoToggle.class);
     private final ServerPlayer player;
 
     public ServerSkillInfo(ServerPlayer player) {
@@ -16,8 +18,8 @@ public class ServerSkillInfo extends SkillInfo {
         this.player = player;
     }
 
-    protected ServerSkillInfo(Map<ResourceLocation, Integer> levels, ServerPlayer player) {
-        super(levels);
+    protected ServerSkillInfo(Map<ResourceLocation, Integer> levels, Set<ResourceLocation> disabled, ServerPlayer player) {
+        super(levels, disabled);
         this.player = player;
     }
 
@@ -36,6 +38,13 @@ public class ServerSkillInfo extends SkillInfo {
         UPDATE.invoker().update(skill, player, level, oldLevel, this);
     }
 
+    @Override
+    public void toggle(ResourceLocation location) {
+        ISkill skill = SkillManager.SKILL.get(location);
+        super.toggle(location);
+        TOGGLE.invoker().toggle(skill, player, isEnabled(skill), this);
+    }
+
     public void sync() {
         super.sync(player);
     }
@@ -47,5 +56,9 @@ public class ServerSkillInfo extends SkillInfo {
 
     public interface SkillInfoUpdate {
         void update(ISkill skill, ServerPlayer p, int newLevel, int oldLevel, ServerSkillInfo skillInfo);
+    }
+
+    public interface SkillInfoToggle {
+        void toggle(ISkill skill, ServerPlayer p, boolean newState, ServerSkillInfo skillInfo);
     }
 }
