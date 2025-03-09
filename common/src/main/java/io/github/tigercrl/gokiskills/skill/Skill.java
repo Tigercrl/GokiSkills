@@ -20,14 +20,14 @@ import java.util.function.Function;
 public class Skill implements ISkill {
     public static final Function<Integer, Double> DEFAULT_CALC_COST = (level) -> Math.pow(level, 1.6) + 6 + level;
 
-    public static final BiFunction<Integer, Integer, Double> DEFAULT_CALC_RETURN = (level, cost) -> Double.valueOf(cost);
+    public static final BiFunction<Integer, Function<Integer, Double>, Double> DEFAULT_CALC_RETURN = (level, calcCost) -> calcCost.apply(level - 1);
 
     public static final Function<Integer, Double> DEFAULT_CALC_BONUS = (level) -> 0.04 * level;
 
     private final ResourceLocation location;
     private final ResourceLocation category;
     private final Function<Integer, Double> calcCost;
-    private final BiFunction<Integer, Integer, Double> calcReturn;
+    private final BiFunction<Integer, Function<Integer, Double>, Double> calcReturn;
     @Nullable
     private final Function<Integer, Double> calcBonus;
     private final SkillTexture icon;
@@ -42,7 +42,7 @@ public class Skill implements ISkill {
     public Skill(
             ResourceLocation category,
             Function<Integer, Double> calcCost,
-            BiFunction<Integer, Integer, Double> calcReturn,
+            BiFunction<Integer, Function<Integer, Double>, Double> calcReturn,
             @Nullable Function<Integer, Double> calcBonus,
             SkillTexture icon,
             SkillTexture frame,
@@ -105,7 +105,7 @@ public class Skill implements ISkill {
 
     @Override
     public int calcReturn(int level) {
-        return Math.toIntExact(Math.round(calcReturn.apply(level, calcCost(level)) * getConfig().downgradeReturnFactor));
+        return Math.toIntExact(Math.round(calcReturn.apply(level, calcCost) * getConfig().downgradeReturnFactor));
     }
 
     @Nullable
@@ -194,7 +194,7 @@ public class Skill implements ISkill {
         private int defaultLevel = 0;
         private int minLevel = 0;
         private Function<Integer, Double> calcCost = DEFAULT_CALC_COST;
-        private BiFunction<Integer, Integer, Double> calcReturn = DEFAULT_CALC_RETURN;
+        private BiFunction<Integer, Function<Integer, Double>, Double> calcReturn = DEFAULT_CALC_RETURN;
         @Nullable
         private Function<Integer, Double> calcBonus = DEFAULT_CALC_BONUS;
         private SkillTexture icon;
@@ -234,7 +234,7 @@ public class Skill implements ISkill {
             return this;
         }
 
-        public Builder setCalcReturn(BiFunction<Integer, Integer, Double> calcReturn) {
+        public Builder setCalcReturn(BiFunction<Integer, Function<Integer, Double>, Double> calcReturn) {
             this.calcReturn = calcReturn;
             return this;
         }
