@@ -68,7 +68,7 @@ public class SkillInfo {
         }
     }
 
-    public void onDeath() {
+    public void onDeath(ServerPlayer player) {
         if (GokiSkills.config.lostLevelOnDeath.enabled) {
             levels.forEach((key, value) -> {
                 boolean lost = Math.random() < GokiSkills.config.lostLevelOnDeath.chance;
@@ -82,6 +82,7 @@ public class SkillInfo {
                     );
                     if (lostLevel > 0) {
                         levels.put(key, value - lostLevel);
+                        sync(player);
                     }
                 }
             });
@@ -125,7 +126,10 @@ public class SkillInfo {
         // v1.0.1+
         if (compoundTag.contains("levels") && compoundTag.contains("disabled")) {
             CompoundTag levelTag = compoundTag.getCompound("levels");
-            levelTag.getAllKeys().forEach(key -> levels.put(ResourceLocation.tryParse(key), levelTag.getInt(key)));
+            levelTag.getAllKeys().forEach(key -> {
+                if (!ResourceLocation.tryParse(key).getNamespace().equals("minecraft"))
+                    levels.put(ResourceLocation.tryParse(key), compoundTag.getInt(key));
+            });
             compoundTag.getList("disabled", Tag.TAG_STRING).forEach(tag -> disabled.add(ResourceLocation.tryParse(tag.getAsString())));
         } else { // v1.0.0
             compoundTag.getAllKeys().forEach(key -> levels.put(ResourceLocation.tryParse(key), compoundTag.getInt(key)));

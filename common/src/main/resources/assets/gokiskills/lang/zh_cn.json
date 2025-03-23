@@ -58,8 +58,8 @@
   "skill.gokiskills.fencing.desc": "剑伤害增加 %s%%",
   "skill.gokiskills.fencing.name": "剑术",
 
-  "skill.gokiskills.fortune.desc": "增加特定掉落物数量的期望值",
-  "skill.gokiskills.fortune.name": "时运",
+  "skill.gokiskills.fortune.desc": "增加掉落物数量的期望值",
+  "skill.gokiskills.fortune.name": "凝运",
 
   "skill.gokiskills.harvesting.desc": "收割速度增加 %s%%",
   "skill.gokiskills.harvesting.name": "收割",

@@ -49,7 +49,7 @@ public final class GokiSkills {
         });
         EntityEvent.LIVING_DEATH.register((entity, source) -> {
             if (entity instanceof ServerPlayer player)
-                SkillManager.getInfo(player).onDeath();
+                SkillManager.getInfo(player).onDeath(player);
             return EventResult.pass();
         });
         SkillEvents.register();

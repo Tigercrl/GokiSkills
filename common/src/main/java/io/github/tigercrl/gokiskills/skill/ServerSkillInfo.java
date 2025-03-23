@@ -54,6 +54,15 @@ public class ServerSkillInfo extends SkillInfo {
         sync();
     }
 
+    public void onDeath() {
+        super.onDeath(player);
+    }
+
+    @Override
+    public void onDeath(ServerPlayer player) {
+        onDeath();
+    }
+
     public interface SkillInfoUpdate {
         void update(ISkill skill, ServerPlayer p, int newLevel, int oldLevel, ServerSkillInfo skillInfo);
     }
