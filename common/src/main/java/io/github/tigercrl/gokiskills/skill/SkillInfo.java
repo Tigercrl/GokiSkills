@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class SkillInfo {
+    private final int SCHEMA_VERSION = 1;
+
     private final Map<ResourceLocation, Integer> levels;
     private final Set<ResourceLocation> disabled;
 
@@ -105,6 +107,9 @@ public class SkillInfo {
         ListTag disabledTag = new ListTag();
         disabled.forEach(key -> disabledTag.add(StringTag.valueOf(key.toString())));
         compoundTag.put("disabled", disabledTag);
+        compoundTag.putInt("schema", SCHEMA_VERSION);
+        System.out.println("save");
+        System.out.println(compoundTag.getAsString());
         return compoundTag;
     }
 
@@ -123,17 +128,33 @@ public class SkillInfo {
     public static SkillInfo fromNbt(CompoundTag compoundTag) {
         Map<ResourceLocation, Integer> levels = new HashMap<>();
         Set<ResourceLocation> disabled = new HashSet<>();
-        // v1.0.1+
-        if (compoundTag.contains("levels") && compoundTag.contains("disabled")) {
-            CompoundTag levelTag = compoundTag.getCompound("levels");
-            levelTag.getAllKeys().forEach(key -> {
-                if (!ResourceLocation.tryParse(key).getNamespace().equals("minecraft"))
-                    levels.put(ResourceLocation.tryParse(key), compoundTag.getInt(key));
-            });
-            compoundTag.getList("disabled", Tag.TAG_STRING).forEach(tag -> disabled.add(ResourceLocation.tryParse(tag.getAsString())));
-        } else { // v1.0.0
-            compoundTag.getAllKeys().forEach(key -> levels.put(ResourceLocation.tryParse(key), compoundTag.getInt(key)));
+        SkillManager.SKILL.entrySet().forEach(entry -> levels.put(entry.getKey().location(), entry.getValue().getDefaultLevel()));
+        System.out.println("read");
+        System.out.println(compoundTag.getAsString());
+        if (compoundTag.contains("schema")) {
+            switch (compoundTag.getInt("schema")) {
+                case 1:
+                    readVer1(compoundTag, levels, disabled);
+            }
+        } else if (compoundTag.contains("levels")) {
+            readVer1(compoundTag, levels, disabled);
+        } else {
+            readVer0(compoundTag, levels);
         }
         return new SkillInfo(levels, disabled);
+    }
+
+    private static void readVer0(CompoundTag compoundTag, Map<ResourceLocation, Integer> levels) {
+        System.out.println(0);
+        compoundTag.getAllKeys().forEach(key -> levels.put(ResourceLocation.tryParse(key), compoundTag.getInt(key)));
+    }
+
+    private static void readVer1(CompoundTag compoundTag, Map<ResourceLocation, Integer> levels, Set<ResourceLocation> disabled) {
+        System.out.println(1);
+        CompoundTag levelTag = compoundTag.getCompound("levels");
+        System.out.println(levelTag);
+        levelTag.getAllKeys().forEach(key -> levels.put(ResourceLocation.tryParse(key), levelTag.getInt(key)));
+        if (compoundTag.contains("disabled"))
+            compoundTag.getList("disabled", Tag.TAG_STRING).forEach(tag -> disabled.add(ResourceLocation.tryParse(tag.getAsString())));
     }
 }
