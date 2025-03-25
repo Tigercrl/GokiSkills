@@ -75,7 +75,7 @@ public class SkillEvents {
                 ));
             }
         } else if (oldModifier != null) {
-            instance.removeModifier(oldModifier);
+            instance.removeModifier(uuid);
         }
     }
 }

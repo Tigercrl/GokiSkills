@@ -89,7 +89,7 @@ public class SkillsMenuScreen extends Screen {
     }
 
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, i, j, f);
         guiGraphics.drawCenteredString(font, title, width / 2, 15, 16777215);
 
         SkillButton.hasControlDown = hasControlDown();

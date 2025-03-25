@@ -34,7 +34,6 @@ dependencies {
     forge "net.minecraftforge:forge:$rootProject.forge_version"
 
     modImplementation "dev.architectury:architectury-forge:$rootProject.architectury_api_version"
-    modImplementation "me.shedaniel.cloth:cloth-config-forge:$rootProject.cloth_config_version"
 
     include "maven.modrinth:max-health-fix:$rootProject.max_health_fix_version-forge,$rootProject.minecraft_version"
 
