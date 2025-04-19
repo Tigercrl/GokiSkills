@@ -52,7 +52,11 @@ public class ConfigUtils {
 
     public static <T extends GokiConfig> void saveConfig(String fileName, T config) {
         try {
-            Files.writeString(new File("config", fileName + ".json").toPath(), serialize(config), StandardOpenOption.CREATE);
+            File file = new File("config", fileName + ".json");
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+            }
+            Files.writeString(file.toPath(), serialize(config), StandardOpenOption.CREATE);
         } catch (Exception e) {
             LOGGER.error("Failed to save config file: {}.json", fileName, e);
         }

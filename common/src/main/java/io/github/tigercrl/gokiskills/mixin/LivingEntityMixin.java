@@ -15,6 +15,8 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -35,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.tigercrl.gokiskills.skill.Skills.*;
-import static io.github.tigercrl.gokiskills.skill.Skills.PROTECTION;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
@@ -169,6 +170,21 @@ public abstract class LivingEntityMixin {
         }
         gokiskills$hurtEntity(entity, source, amount);
         cir.setReturnValue(true);
+    }
+
+    @Inject(method = "calculateFallDamage", at = @At("RETURN"), cancellable = true)
+    public void jumpBoostDamage(float f, float g, CallbackInfoReturnable<Integer> cir) {
+        if ((LivingEntity) (Object) this instanceof Player p && cir.getReturnValue() > 0) {
+            SkillInfo info = SkillManager.getInfo(p);
+            if (info.isEnabled(Skills.JUMP_BOOST)) {
+                double bonus = info.getBonus(Skills.JUMP_BOOST);
+                if (bonus > 0) {
+                    MobEffectInstance mobEffectInstance = p.getEffect(MobEffects.JUMP);
+                    int h = mobEffectInstance == null ? 0 : mobEffectInstance.getAmplifier() + 1;
+                    cir.setReturnValue(Mth.ceil((f - 3 - h - 3.5 * bonus) * g));
+                }
+            }
+        }
     }
 
     @Unique
