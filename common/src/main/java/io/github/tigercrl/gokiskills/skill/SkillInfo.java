@@ -2,12 +2,14 @@ package io.github.tigercrl.gokiskills.skill;
 
 import io.github.tigercrl.gokiskills.GokiSkills;
 import io.github.tigercrl.gokiskills.misc.GokiUtils;
-import io.github.tigercrl.gokiskills.network.S2CSyncSkillInfoMessage;
+import io.github.tigercrl.gokiskills.network.GokiNetwork;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +20,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class SkillInfo {
-    private final int SCHEMA_VERSION = 1;
+    public static final StreamCodec<ByteBuf, SkillInfo> STREAM_CODEC =
+            ByteBufCodecs.COMPOUND_TAG.map(SkillInfo::fromNbt, SkillInfo::toNbt);
+
+    private static final int SCHEMA_VERSION = 1;
 
     private final Map<ResourceLocation, Integer> levels;
     private final Set<ResourceLocation> disabled;
@@ -84,7 +89,7 @@ public class SkillInfo {
                     );
                     if (lostLevel > 0) {
                         levels.put(key, value - lostLevel);
-                        sync(player);
+                        GokiNetwork.sendSkillInfoSync(player);
                     }
                 }
             });
@@ -93,34 +98,6 @@ public class SkillInfo {
 
     public ServerSkillInfo toServerSkillInfo(ServerPlayer player) {
         return new ServerSkillInfo(levels, disabled, player);
-    }
-
-    public void sync(ServerPlayer player) {
-        new S2CSyncSkillInfoMessage(this).sendTo(player);
-    }
-
-    public CompoundTag toNbt() {
-        CompoundTag compoundTag = new CompoundTag();
-        CompoundTag levelTag = new CompoundTag();
-        levels.forEach((key, value) -> levelTag.putInt(key.toString(), value));
-        compoundTag.put("levels", levelTag);
-        ListTag disabledTag = new ListTag();
-        disabled.forEach(key -> disabledTag.add(StringTag.valueOf(key.toString())));
-        compoundTag.put("disabled", disabledTag);
-        compoundTag.putInt("schema", SCHEMA_VERSION);
-        return compoundTag;
-    }
-
-    public void writeBuf(FriendlyByteBuf buf) {
-        buf.writeMap(levels, FriendlyByteBuf::writeResourceLocation, FriendlyByteBuf::writeVarInt);
-        buf.writeCollection(disabled, FriendlyByteBuf::writeResourceLocation);
-    }
-
-    public static SkillInfo fromBuf(FriendlyByteBuf buf) {
-        return new SkillInfo(
-                new HashMap<>(buf.readMap(FriendlyByteBuf::readResourceLocation, FriendlyByteBuf::readVarInt)),
-                buf.readCollection(HashSet::new, FriendlyByteBuf::readResourceLocation)
-        );
     }
 
     public static SkillInfo fromNbt(CompoundTag compoundTag) {
@@ -138,6 +115,18 @@ public class SkillInfo {
             readVer0(compoundTag, levels);
         }
         return new SkillInfo(levels, disabled);
+    }
+
+    public CompoundTag toNbt() {
+        CompoundTag compoundTag = new CompoundTag();
+        CompoundTag levelTag = new CompoundTag();
+        levels.forEach((key, value) -> levelTag.putInt(key.toString(), value));
+        compoundTag.put("levels", levelTag);
+        ListTag disabledTag = new ListTag();
+        disabled.forEach(key -> disabledTag.add(StringTag.valueOf(key.toString())));
+        compoundTag.put("disabled", disabledTag);
+        compoundTag.putInt("schema", SCHEMA_VERSION);
+        return compoundTag;
     }
 
     private static void readVer0(CompoundTag compoundTag, Map<ResourceLocation, Integer> levels) {

@@ -9,10 +9,12 @@ import io.github.tigercrl.gokiskills.config.ConfigUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.Bootstrap;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
@@ -23,18 +25,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import static io.github.tigercrl.gokiskills.GokiSkills.resource;
+
 public class SkillManager {
-    public static final ResourceKey<Registry<ISkill>> REGISTRY = ResourceKey.createRegistryKey(new ResourceLocation(GokiSkills.MOD_ID, "skills"));
+    public static final ResourceKey<Registry<ISkill>> REGISTRY = ResourceKey.createRegistryKey(resource("skills"));
     public static Registry<ISkill> SKILL;
     public static final Map<ServerPlayer, ServerSkillInfo> INFOS = new HashMap<>();
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static void init(WritableRegistry<WritableRegistry<?>> writableRegistry, Map<ResourceLocation, Supplier<?>> LOADERS) {
-        Lifecycle lifecycle = Lifecycle.stable();
-        SKILL = new MappedRegistry<>(SkillManager.REGISTRY, lifecycle, false);
-        LOADERS.put(REGISTRY.location(), () -> Skills.bootstrap(SKILL));
-        writableRegistry.register((ResourceKey<WritableRegistry<?>>) (Object) SkillManager.REGISTRY, (WritableRegistry<?>) SKILL, lifecycle);
+    public static void init(WritableRegistry<WritableRegistry<?>> WRITABLE_REGISTRY, Map<ResourceLocation, Supplier<?>> LOADERS) {
+        Bootstrap.checkBootstrapCalled(() -> "registry " + REGISTRY);
+        ResourceLocation resourceLocation = REGISTRY.location();
+        WritableRegistry<ISkill> writableRegistry = new MappedRegistry<>(REGISTRY, Lifecycle.stable(), false);
+        LOADERS.put(resourceLocation, () -> Skills.bootstrap(writableRegistry));
+        SKILL = writableRegistry;
+        WRITABLE_REGISTRY.register((ResourceKey<WritableRegistry<?>>) (Object) REGISTRY, writableRegistry, RegistrationInfo.BUILT_IN);
     }
 
     @Environment(EnvType.CLIENT)

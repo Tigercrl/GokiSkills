@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[49,)"
+loaderVersion = "[3,)"
 issueTrackerURL = "https://github.com/Tigercrl/GokiSkills/issues"
 license = "GNU GPL 3.0"
 
@@ -13,24 +13,28 @@ Unlock and upgrade your skills by experience points!
 '''
 displayURL = "https://modrinth.com/mod/gokiskills"
 logoFile = "assets/gokiskills/icon.png"
+updateJSONURL = "https://api.modrinth.com/updates/gokiskills/forge_updates.json"
+
+[[mixins]]
+config="gokiskills.mixins.json"
 
 [[dependencies.gokiskills]]
-modId = "forge"
+modId = "neoforge"
 mandatory = true
-versionRange = "[49,)"
+versionRange = "[3,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.gokiskills]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.4,1.20.5)"
+versionRange = "[1.20.6,1.20.7)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.gokiskills]]
 modId = "architectury"
 mandatory = true
-versionRange = "[11.1.17,)"
+versionRange = "[12.1.4,)"
 ordering = "AFTER"
 side = "BOTH"

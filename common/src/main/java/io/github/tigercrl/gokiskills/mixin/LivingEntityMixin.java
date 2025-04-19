@@ -5,6 +5,8 @@ import io.github.tigercrl.gokiskills.skill.SkillInfo;
 import io.github.tigercrl.gokiskills.skill.SkillManager;
 import io.github.tigercrl.gokiskills.skill.Skills;
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
@@ -19,12 +21,15 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PowderSnowBlock;
 import net.minecraft.world.phys.Vec3;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -46,8 +51,42 @@ public abstract class LivingEntityMixin {
     @Shadow
     public abstract boolean onClimbable();
 
+    @Shadow
+    public abstract float getMaxHealth();
+
+    @Shadow
+    public abstract void setHealth(float f);
+
+    @Shadow
+    @Final
+    private AttributeMap attributes;
     @Unique
     private static final List<LivingEntity> gokiskills$ignoreEntityHurt = new ArrayList<>();
+
+    @Unique
+    private static Float gokiskills$savedHealth = null;
+
+    @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
+    public void readHealth(CompoundTag compoundTag, CallbackInfo ci) {
+        if ((LivingEntity) (Object) this instanceof Player) {
+            if (compoundTag.contains("Health", Tag.TAG_ANY_NUMERIC)) {
+                float health = compoundTag.getFloat("Health");
+                if (getMaxHealth() < health && health <= attributes.getValue(Attributes.MAX_HEALTH))
+                    gokiskills$savedHealth = health;
+            }
+        }
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    public void initHealth(CallbackInfo ci) {
+        if ((LivingEntity) (Object) this instanceof Player &&
+                gokiskills$savedHealth != null &&
+                getMaxHealth() >= gokiskills$savedHealth
+        ) {
+            setHealth(gokiskills$savedHealth);
+            gokiskills$savedHealth = null;
+        }
+    }
 
     @Inject(method = "handleRelativeFrictionAndCalculateMovement", at = @At("RETURN"), cancellable = true)
     public void climbBonus(Vec3 vec3, float f, CallbackInfoReturnable<Vec3> cir) {
@@ -57,7 +96,7 @@ public abstract class LivingEntityMixin {
             if (info.isEnabled(Skills.CLIMBING) &&
                     (entity.horizontalCollision || jumping) &&
                     (
-                            onClimbable() || player.getFeetBlockState().is(Blocks.POWDER_SNOW) &&
+                            onClimbable() || player.getInBlockState().is(Blocks.POWDER_SNOW) &&
                                     PowderSnowBlock.canEntityWalkOnPowderSnow(player)
                     )
             ) {

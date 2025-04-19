@@ -2,6 +2,9 @@ package io.github.tigercrl.gokiskills.config;
 
 import com.google.gson.*;
 import com.mojang.logging.LogUtils;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -76,5 +79,12 @@ public class ConfigUtils {
 
     public static <T> T deserialize(String json, Class<T> clazz) {
         return gson.fromJson(json, clazz);
+    }
+
+    public static <T> StreamCodec<ByteBuf, T> streamCodecOf(Class<T> clazz) {
+        return ByteBufCodecs.STRING_UTF8.map(
+                str -> ConfigUtils.deserialize(str, clazz),
+                ConfigUtils::serialize
+        );
     }
 }

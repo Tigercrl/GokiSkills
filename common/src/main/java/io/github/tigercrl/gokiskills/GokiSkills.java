@@ -9,12 +9,13 @@ import dev.architectury.platform.Platform;
 import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
 import io.github.tigercrl.gokiskills.config.CommonConfig;
 import io.github.tigercrl.gokiskills.config.ConfigUtils;
-import io.github.tigercrl.gokiskills.network.S2CSyncConfigMessage;
+import io.github.tigercrl.gokiskills.network.GokiNetwork;
 import io.github.tigercrl.gokiskills.skill.ServerSkillInfo;
 import io.github.tigercrl.gokiskills.skill.SkillEvents;
 import io.github.tigercrl.gokiskills.skill.SkillManager;
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.slf4j.Logger;
 
@@ -41,8 +42,8 @@ public final class GokiSkills {
         });
         PlayerEvent.PLAYER_JOIN.register(player -> {
             SkillManager.INFOS.putIfAbsent(player, new ServerSkillInfo(player));
-            new S2CSyncConfigMessage(config).sendTo(player);
-            SkillManager.getInfo(player).sync(player);
+            GokiNetwork.sendConfigSync(player);
+            GokiNetwork.sendSkillInfoSync(player);
         });
         LifecycleEvent.SERVER_LEVEL_UNLOAD.register(level -> {
             SkillManager.INFOS.clear();
@@ -64,5 +65,9 @@ public final class GokiSkills {
         )
             return GokiSkillsClient.serverConfig;
         return config;
+    }
+
+    public static ResourceLocation resource(String path) {
+        return new ResourceLocation(MOD_ID, path);
     }
 }

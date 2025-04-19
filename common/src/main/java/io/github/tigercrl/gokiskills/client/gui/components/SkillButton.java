@@ -3,7 +3,7 @@ package io.github.tigercrl.gokiskills.client.gui.components;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
 import io.github.tigercrl.gokiskills.client.gui.screens.SkillsMenuScreen;
-import io.github.tigercrl.gokiskills.network.*;
+import io.github.tigercrl.gokiskills.network.GokiNetwork;
 import io.github.tigercrl.gokiskills.skill.Skill;
 import io.github.tigercrl.gokiskills.skill.SkillManager;
 import net.fabricmc.api.EnvType;
@@ -57,29 +57,29 @@ public class SkillButton extends Button {
     public void onPress() {
         if (hasAltDown) {
             waitForUpdate = true;
-            new C2SToggleMessage(skill.getResourceLocation()).sendToServer();
+            GokiNetwork.sendSkillToggle(skill.getResourceLocation());
         } else {
             int[] result = SkillManager.calcOperation(skill, level, SkillsMenuScreen.playerXp, !hasControlDown, hasShiftDown);
             if (!waitForUpdate && result[0] != 0) {
                 if (hasControlDown && hasShiftDown) {
                     if (level > skill.getMinLevel()) {
                         waitForUpdate = true;
-                        new C2SFastDowngradeMessage(skill.getResourceLocation()).sendToServer();
+                        GokiNetwork.sendSkillFastDowngrade(skill.getResourceLocation());
                     }
                 } else if (hasControlDown) {
                     if (level > skill.getMinLevel()) {
                         waitForUpdate = true;
-                        new C2SDowngradeMessage(skill.getResourceLocation()).sendToServer();
+                        GokiNetwork.sendSkillDowngrade(skill.getResourceLocation());
                     }
                 } else if (hasShiftDown) {
                     if (level < skill.getMaxLevel()) {
                         waitForUpdate = true;
-                        new C2SFastUpgradeMessage(skill.getResourceLocation()).sendToServer();
+                        GokiNetwork.sendSkillFastUpgrade(skill.getResourceLocation());
                     }
                 } else {
                     if (level < skill.getMaxLevel()) {
                         waitForUpdate = true;
-                        new C2SUpgradeMessage(skill.getResourceLocation()).sendToServer();
+                        GokiNetwork.sendSkillUpgrade(skill.getResourceLocation());
                     }
                 }
             }

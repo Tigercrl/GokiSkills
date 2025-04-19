@@ -1,6 +1,7 @@
 package io.github.tigercrl.gokiskills.skill;
 
 import dev.architectury.event.events.common.PlayerEvent;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -43,7 +44,7 @@ public class SkillEvents {
                     Attributes.KNOCKBACK_RESISTANCE,
                     KNOCKBACK_RESISTANCE_MODIFIER_UUID,
                     "GokiSkills knockback resistance",
-                    AttributeModifier.Operation.ADDITION
+                    AttributeModifier.Operation.ADD_VALUE
             );
         else if (skill == HEALTH)
             updateAttribute(
@@ -52,20 +53,20 @@ public class SkillEvents {
                     Attributes.MAX_HEALTH,
                     HEALTH_MODIFIER_UUID,
                     "GokiSkills health",
-                    AttributeModifier.Operation.ADDITION
+                    AttributeModifier.Operation.ADD_VALUE
             );
     }
 
-    public static void updateAttribute(ServerPlayer player, SkillInfo info, ISkill skill, Attribute attribute, UUID uuid, String name, AttributeModifier.Operation operation) {
+    public static void updateAttribute(ServerPlayer player, SkillInfo info, ISkill skill, Holder<Attribute> attribute, UUID uuid, String name, AttributeModifier.Operation operation) {
         updateAttribute(player, info, skill, attribute, uuid, name, operation, true);
     }
 
-    public static void updateAttribute(ServerPlayer player, SkillInfo info, ISkill skill, Attribute attribute, UUID uuid, String name, AttributeModifier.Operation operation, boolean condition) {
+    public static void updateAttribute(ServerPlayer player, SkillInfo info, ISkill skill, Holder<Attribute> attribute, UUID uuid, String name, AttributeModifier.Operation operation, boolean condition) {
         double bonus = info.getBonus(skill);
         AttributeInstance instance = player.getAttribute(attribute);
         AttributeModifier oldModifier = instance.getModifier(uuid);
         if (condition && info.isEnabled(skill) && bonus > 0) {
-            if (oldModifier == null || oldModifier.getAmount() != bonus) {
+            if (oldModifier == null || oldModifier.amount() != bonus) {
                 instance.removeModifier(uuid);
                 instance.addTransientModifier(new AttributeModifier(
                         uuid,

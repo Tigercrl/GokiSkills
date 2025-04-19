@@ -89,14 +89,12 @@ public class SkillsMenuScreen extends Screen {
     }
 
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        this.renderBackground(guiGraphics, i, j, f);
-        guiGraphics.drawCenteredString(font, title, width / 2, 15, 16777215);
-
         SkillButton.hasControlDown = hasControlDown();
         SkillButton.hasShiftDown = hasShiftDown();
         SkillButton.hasAltDown = hasAltDown();
 
         if (!loaded) {
+            this.renderBackground(guiGraphics, i, j, f);
             String s = LoadingDotsText.get(Util.getMillis());
             guiGraphics.drawCenteredString(font, s, width / 2, height / 2 - 6, 8421504);
             guiGraphics.drawCenteredString(font, LOADING, width / 2, height / 2 + 6, 16777215);
@@ -113,6 +111,8 @@ public class SkillsMenuScreen extends Screen {
                 }
             }
         }
+
+        guiGraphics.drawCenteredString(font, title, width / 2, 15, 16777215);
     }
 
     @Override

@@ -45,15 +45,6 @@ public class ServerSkillInfo extends SkillInfo {
         TOGGLE.invoker().toggle(skill, player, isEnabled(skill), this);
     }
 
-    public void sync() {
-        super.sync(player);
-    }
-
-    @Override
-    public void sync(ServerPlayer player) {
-        sync();
-    }
-
     public void onDeath() {
         super.onDeath(player);
     }
