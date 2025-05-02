@@ -20,13 +20,13 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.ORANGE))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/ladder.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/ladder.png"))
                             .setTextureSize(16)
                             .build()
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/acacia_planks.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/acacia_planks.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -51,7 +51,7 @@ public class Skills {
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/stone.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/stone.png"))
                             .setTextureSize(24)
                             .build()
             )
@@ -72,7 +72,7 @@ public class Skills {
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/crimson_planks.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/crimson_planks.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -98,7 +98,7 @@ public class Skills {
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/birch_planks.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/birch_planks.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -116,7 +116,7 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.LIGHT_BLUE))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/mob_effect/dolphins_grace.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/mob_effect/dolphins_grace.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -141,13 +141,13 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.WHITE))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/mob_effect/jump_boost.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/mob_effect/jump_boost.png"))
                             .setTextureSize(16)
                             .build()
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/birch_planks.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/birch_planks.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -165,13 +165,13 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.BROWN))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/item/diamond_axe.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/item/diamond_axe.png"))
                             .setTextureSize(16)
                             .build()
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/oak_log.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/oak_log.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -188,13 +188,13 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.LIGHT_GRAY))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/item/diamond_shovel.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/item/diamond_shovel.png"))
                             .setTextureSize(16)
                             .build()
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/gravel.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/gravel.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -211,14 +211,13 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.YELLOW))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/item/diamond_hoe.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/item/diamond_hoe.png"))
                             .setTextureSize(16)
                             .build()
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("minecraft",
-                                    "textures/block/hay_block_side.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/hay_block_side.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -235,13 +234,13 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.GRAY))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/item/diamond_pickaxe.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/item/diamond_pickaxe.png"))
                             .setTextureSize(16)
                             .build()
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/stone.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/stone.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -258,13 +257,13 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.YELLOW))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/item/shears.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/item/shears.png"))
                             .setTextureSize(16)
                             .build()
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/yellow_wool.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/yellow_wool.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -282,13 +281,13 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.YELLOW))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/item/raw_iron.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/item/raw_iron.png"))
                             .setTextureSize(16)
                             .build()
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/gold_block.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/gold_block.png"))
                             .setTextureSize(24)
                             .build()
             )
@@ -306,7 +305,7 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.RED))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/item/bow_pulling_0.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/item/bow_pulling_0.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -336,7 +335,7 @@ public class Skills {
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/bricks.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/bricks.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -354,13 +353,13 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.PINK))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/item/iron_sword.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/item/iron_sword.png"))
                             .setTextureSize(16)
                             .build()
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/cherry_planks.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/cherry_planks.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -384,7 +383,7 @@ public class Skills {
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/chiseled_polished_blackstone.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/chiseled_polished_blackstone.png"))
                             .setTextureSize(24)
                             .build()
             )
@@ -409,7 +408,7 @@ public class Skills {
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/red_terracotta.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/red_terracotta.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -435,7 +434,7 @@ public class Skills {
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/tnt_side.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/tnt_side.png"))
                             .setTextureSize(24)
                             .build()
             )
@@ -479,13 +478,13 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.LIGHT_BLUE))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/mob_effect/fire_resistance.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/mob_effect/fire_resistance.png"))
                             .setTextureSize(16)
                             .build()
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/ice.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/ice.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -504,13 +503,13 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.WHITE))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/item/feather.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/item/feather.png"))
                             .setTextureSize(16)
                             .build()
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/sand.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/sand.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -529,13 +528,13 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.WHITE))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/mob_effect/absorption.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/mob_effect/absorption.png"))
                             .setTextureSize(16)
                             .build()
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/iron_block.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/iron_block.png"))
                             .setTextureSize(24)
                             .build()
             )
@@ -554,13 +553,13 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.GRAY))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/mob_effect/resistance.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/mob_effect/resistance.png"))
                             .setTextureSize(16)
                             .build()
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/netherite_block.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/netherite_block.png"))
                             .setTextureSize(24)
                             .build()
             )

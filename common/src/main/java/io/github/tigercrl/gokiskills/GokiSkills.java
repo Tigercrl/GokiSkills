@@ -68,6 +68,6 @@ public final class GokiSkills {
     }
 
     public static ResourceLocation resource(String path) {
-        return new ResourceLocation(MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 }

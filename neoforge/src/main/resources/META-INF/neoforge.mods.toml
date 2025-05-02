@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[3,)"
+loaderVersion = "[4,)"
 issueTrackerURL = "https://github.com/Tigercrl/GokiSkills/issues"
 license = "GNU GPL 3.0"
 
@@ -16,25 +16,25 @@ logoFile = "assets/gokiskills/icon.png"
 updateJSONURL = "https://api.modrinth.com/updates/gokiskills/forge_updates.json"
 
 [[mixins]]
-config="gokiskills.mixins.json"
+config = "gokiskills.mixins.json"
 
 [[dependencies.gokiskills]]
 modId = "neoforge"
 mandatory = true
-versionRange = "[3,)"
+versionRange = "[4,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.gokiskills]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.6,1.20.7)"
+versionRange = "[1.21,1.21.1]"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.gokiskills]]
 modId = "architectury"
 mandatory = true
-versionRange = "[12.1.4,)"
+versionRange = "[13.0.8,)"
 ordering = "AFTER"
 side = "BOTH"

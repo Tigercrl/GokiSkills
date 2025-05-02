@@ -1,8 +1,5 @@
 package io.github.tigercrl.gokiskills.client.gui;
 
-import io.github.tigercrl.gokiskills.GokiSkills;
-import net.minecraft.resources.ResourceLocation;
-
 import static io.github.tigercrl.gokiskills.GokiSkills.resource;
 
 public class SkillTextures {
@@ -21,12 +18,7 @@ public class SkillTextures {
 
     public static SkillTexture getFrame(FrameColor color) {
         return DEFAULT_FRAME_BUILDER
-                .setDefaultImage(
-                        new ResourceLocation(
-                                GokiSkills.MOD_ID,
-                                "textures/gui/frame/" + color.name().toLowerCase() + ".png"
-                        )
-                ).build();
+                .setDefaultImage(resource("textures/gui/frame/" + color.name().toLowerCase() + ".png")).build();
     }
 
     public enum FrameColor {

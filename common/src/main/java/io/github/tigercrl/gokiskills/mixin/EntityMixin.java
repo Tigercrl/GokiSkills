@@ -24,8 +24,7 @@ public class EntityMixin {
                     player, info,
                     Skills.NINJA,
                     Attributes.MOVEMENT_SPEED,
-                    SkillEvents.NINJA_SPEED_MODIFIER_UUID,
-                    "GokiSkills ninja speed",
+                    SkillEvents.NINJA_SKILL_MODIFIER,
                     AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL,
                     bl
             );
