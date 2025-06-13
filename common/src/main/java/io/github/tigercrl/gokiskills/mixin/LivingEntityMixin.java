@@ -46,6 +46,9 @@ public abstract class LivingEntityMixin {
     @Shadow
     public abstract boolean onClimbable();
 
+    @Shadow
+    public abstract boolean hurt(DamageSource damageSource, float f);
+
     @Unique
     private static final List<LivingEntity> gokiskills$ignoreEntityHurt = new ArrayList<>();
 
@@ -75,14 +78,12 @@ public abstract class LivingEntityMixin {
         Entity entity = (Entity) (Object) this;
         if (entity instanceof Player player) {
             SkillInfo info = SkillManager.getInfo(player);
-            if (player.isSprinting()) {
-                double jumpBoostBonus = info.isEnabled(Skills.JUMP_BOOST) ? info.getBonus(Skills.JUMP_BOOST) : 0;
-                double leaperBonus = info.isEnabled(Skills.LEAPER) ? info.getBonus(Skills.LEAPER) : 0;
-                player.setDeltaMovement(
-                        player.getDeltaMovement()
-                                .multiply(leaperBonus + 1, jumpBoostBonus + 1, leaperBonus + 1)
-                );
-            }
+            double jumpBoostBonus = info.isEnabled(Skills.JUMP_BOOST) ? info.getBonus(Skills.JUMP_BOOST) : 0;
+            double leaperBonus = info.isEnabled(Skills.LEAPER) ? info.getBonus(Skills.LEAPER) : 0;
+            player.setDeltaMovement(
+                    player.getDeltaMovement()
+                            .multiply(leaperBonus + 1, jumpBoostBonus + 1, leaperBonus + 1)
+            );
         }
     }
 
@@ -101,7 +102,17 @@ public abstract class LivingEntityMixin {
             if (info.isEnabled(ONE_HIT)) {
                 double bonus = info.getBonus(ONE_HIT);
                 if (entity.getHealth() < entity.getMaxHealth() * 0.4 * bonus && Math.random() < bonus) {
-                    gokiskills$hurtEntity(entity, source, Float.MAX_VALUE);
+                    if (entity.isInvulnerableTo(source)) {
+                        source = entity.damageSources().generic();
+                        if (entity.isInvulnerableTo(source))
+                            source = entity.damageSources().genericKill();
+                    }
+                    for (int i = 0; i < 500; i++) {
+                        if (entity.isDeadOrDying()) {
+                            break;
+                        }
+                        gokiskills$hurtEntity(entity, source, entity.getMaxHealth());
+                    }
                     player.connection.send(
                             new ClientboundSetActionBarTextPacket(
                                     Component.translatable("skill.gokiskills.one_hit.message")

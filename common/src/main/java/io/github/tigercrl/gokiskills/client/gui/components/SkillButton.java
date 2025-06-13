@@ -5,7 +5,7 @@ import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
 import io.github.tigercrl.gokiskills.client.gui.screens.SkillsMenuScreen;
 import io.github.tigercrl.gokiskills.network.*;
 import io.github.tigercrl.gokiskills.skill.Skill;
-import io.github.tigercrl.gokiskills.skill.SkillManager;
+import io.github.tigercrl.gokiskills.skill.SkillInfo;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -25,7 +25,7 @@ public class SkillButton extends Button {
     public static final int DEFAULT_WIDTH = 24;
     public static final int DEFAULT_HEIGHT = 24;
     public static final int DEFAULT_ICON_PADDING = 4;
-    private static final Component LOADING = Component.translatable("gui.gokiskills.loading.level");
+    private static final Component LOADING = Component.translatable("gui.gokiskills.loading.skill");
     private static final Component DISABLED = Component.translatable("gui.gokiskills.disabled")
             .withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY));
     private static final Component NO_DOWNGRADE = Component.translatable("gui.gokiskills.downgrade.no")
@@ -59,7 +59,7 @@ public class SkillButton extends Button {
             waitForUpdate = true;
             new C2SToggleMessage(skill.getResourceLocation()).sendToServer();
         } else {
-            int[] result = SkillManager.calcOperation(skill, level, SkillsMenuScreen.playerXp, !hasControlDown, hasShiftDown);
+            int[] result = SkillInfo.calcOperation(skill, level, SkillsMenuScreen.playerXp, !hasControlDown, hasShiftDown);
             if (!waitForUpdate && result[0] != 0) {
                 if (hasControlDown && hasShiftDown) {
                     if (level > skill.getMinLevel()) {
@@ -144,7 +144,7 @@ public class SkillButton extends Button {
         if (isHovered) {
             Component click = null;
             Component cost = null;
-            int[] result = SkillManager.calcOperation(skill, level, SkillsMenuScreen.playerXp, !hasControlDown, hasShiftDown);
+            int[] result = SkillInfo.calcOperation(skill, level, SkillsMenuScreen.playerXp, !hasControlDown, hasShiftDown);
 
             if (hasAltDown) {
                 if (enabled) click = Component.translatable("gui.gokiskills.toggle.off")

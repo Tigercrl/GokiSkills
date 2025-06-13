@@ -10,6 +10,7 @@
     "BuiltInRegistriesMixin",
     "EntityMixin",
     "LivingEntityMixin",
+    "PlayerMixin",
     "ServerPlayerMixin"
   ],
   "injectors": {

@@ -3,14 +3,6 @@ package io.github.tigercrl.gokiskills.network;
 import dev.architectury.networking.simple.MessageType;
 import dev.architectury.networking.simple.SimpleNetworkManager;
 import io.github.tigercrl.gokiskills.GokiSkills;
-import io.github.tigercrl.gokiskills.misc.GokiUtils;
-import io.github.tigercrl.gokiskills.skill.ISkill;
-import io.github.tigercrl.gokiskills.skill.ServerSkillInfo;
-import io.github.tigercrl.gokiskills.skill.SkillInfo;
-import io.github.tigercrl.gokiskills.skill.SkillManager;
-import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 
 public interface GokiNetwork {
     SimpleNetworkManager NET = SimpleNetworkManager.create(GokiSkills.MOD_ID);
@@ -23,23 +15,4 @@ public interface GokiNetwork {
     MessageType SKILL_DOWNGRADE = NET.registerC2S("skill_downgrade", C2SDowngradeMessage::new);
     MessageType SKILL_FAST_DOWNGRADE = NET.registerC2S("skill_fast_downgrade", C2SFastDowngradeMessage::new);
     MessageType SKILL_TOGGLE = NET.registerC2S("skill_toggle", C2SToggleMessage::new);
-
-    static void handleLevelOperation(ServerPlayer p, ResourceLocation location, boolean upgrade, boolean fast) {
-        ISkill skill = SkillManager.SKILL.get(location);
-        SkillInfo skillInfo = SkillManager.getInfo(p);
-        int level = skillInfo.getLevel(skill);
-
-        int[] result = SkillManager.calcOperation(skill, level, GokiUtils.getPlayerTotalXp(p), upgrade, fast);
-
-        skillInfo.setLevel(location, level + result[0]);
-        p.giveExperiencePoints(result[1]);
-        ((ServerSkillInfo) SkillManager.getInfo(p)).sync();
-        p.connection.send(
-                new ClientboundSetExperiencePacket(
-                        p.experienceProgress,
-                        p.totalExperience,
-                        p.experienceLevel
-                )
-        );
-    }
 }

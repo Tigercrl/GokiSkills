@@ -6,6 +6,7 @@ import com.mojang.serialization.Lifecycle;
 import io.github.tigercrl.gokiskills.GokiSkills;
 import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
 import io.github.tigercrl.gokiskills.config.ConfigUtils;
+import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.MappedRegistry;
@@ -13,7 +14,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
 
@@ -26,8 +26,6 @@ import java.util.function.Supplier;
 public class SkillManager {
     public static final ResourceKey<Registry<ISkill>> REGISTRY = ResourceKey.createRegistryKey(new ResourceLocation(GokiSkills.MOD_ID, "skills"));
     public static Registry<ISkill> SKILL;
-    public static final Map<ServerPlayer, ServerSkillInfo> INFOS = new HashMap<>();
-
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public static void init(WritableRegistry<WritableRegistry<?>> writableRegistry, Map<ResourceLocation, Supplier<?>> LOADERS) {
@@ -97,56 +95,9 @@ public class SkillManager {
         return Map.copyOf(configs);
     }
 
-    /**
-     * Calculate the cost of upgrading / downgrading skill
-     * @param skill skill
-     * @param level current skill level
-     * @param xp current experience points
-     * @param upgrade is upgrade / downgrade
-     * @param fast is fast upgrade / downgrade
-     * @return [addLevel, addXp]
-     */
-    public static int[] calcOperation(ISkill skill, int level, int xp, boolean upgrade, boolean fast) {
-        int addXp = 0;
-        int addLevel = 0;
-        if (upgrade) {
-            if (fast) {
-                while (level + addLevel < skill.getMaxLevel()) {
-                    int thisCost = skill.calcCost(level + addLevel);
-                    if (-addXp + thisCost > xp) break;
-                    addLevel++;
-                    addXp -= thisCost;
-                }
-                return new int[]{addLevel, addXp};
-            } else {
-                addXp = skill.calcCost(level);
-                if (addXp > xp || level + 1 > skill.getMaxLevel()) return new int[]{0, 0};
-                else return new int[]{1, -addXp};
-            }
-        } else {
-            if (fast) {
-                while (level + addLevel > skill.getMinLevel()) {
-                    addXp += skill.calcReturn(level + addLevel);
-                    addLevel--;
-                }
-                return new int[]{addLevel, addXp};
-            } else {
-                if (level - 1 < skill.getMinLevel()) {
-                    return new int[]{0, 0};
-                } else {
-                    addXp = skill.calcReturn(level);
-                    return new int[]{-1, addXp};
-                }
-            }
-        }
-    }
-
     public static SkillInfo getInfo(Player player) {
-        SkillInfo info = new SkillInfo();
-        if (player instanceof ServerPlayer p)
-            info = INFOS.containsKey(p) ? INFOS.get(p) : new ServerSkillInfo(p);
         if (player.level().isClientSide())
-            info = GokiSkillsClient.playerInfo == null ? new SkillInfo() : GokiSkillsClient.playerInfo;
-        return info;
+            return GokiSkillsClient.playerInfo == null ? new SkillInfo() : GokiSkillsClient.playerInfo;
+        return ((GokiServerPlayer) player).getSkillInfo();
     }
 }

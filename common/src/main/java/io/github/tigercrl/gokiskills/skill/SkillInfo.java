@@ -91,15 +91,13 @@ public class SkillInfo {
         }
     }
 
-    public ServerSkillInfo toServerSkillInfo(ServerPlayer player) {
-        return new ServerSkillInfo(levels, disabled, player);
-    }
-
     public void sync(ServerPlayer player) {
         new S2CSyncSkillInfoMessage(this).sendTo(player);
     }
 
+    @Nullable
     public CompoundTag toNbt() {
+        if (levels.isEmpty() && disabled.isEmpty()) return null;
         CompoundTag compoundTag = new CompoundTag();
         CompoundTag levelTag = new CompoundTag();
         levels.forEach((key, value) -> levelTag.putInt(key.toString(), value));
@@ -149,5 +147,49 @@ public class SkillInfo {
         levelTag.getAllKeys().forEach(key -> levels.put(ResourceLocation.tryParse(key), levelTag.getInt(key)));
         if (compoundTag.contains("disabled"))
             compoundTag.getList("disabled", Tag.TAG_STRING).forEach(tag -> disabled.add(ResourceLocation.tryParse(tag.getAsString())));
+    }
+
+    /**
+     * Calculate the cost of upgrading / downgrading skill
+     * @param skill skill
+     * @param level current skill level
+     * @param xp current experience points
+     * @param upgrade is upgrade / downgrade
+     * @param fast is fast upgrade / downgrade
+     * @return [addLevel, addXp]
+     */
+    public static int[] calcOperation(ISkill skill, int level, int xp, boolean upgrade, boolean fast) {
+        int addXp = 0;
+        int addLevel = 0;
+        if (upgrade) {
+            if (fast) {
+                while (level + addLevel < skill.getMaxLevel()) {
+                    int thisCost = skill.calcCost(level + addLevel);
+                    if (-addXp + thisCost > xp) break;
+                    addLevel++;
+                    addXp -= thisCost;
+                }
+                return new int[]{addLevel, addXp};
+            } else {
+                addXp = skill.calcCost(level);
+                if (addXp > xp || level + 1 > skill.getMaxLevel()) return new int[]{0, 0};
+                else return new int[]{1, -addXp};
+            }
+        } else {
+            if (fast) {
+                while (level + addLevel > skill.getMinLevel()) {
+                    addXp += skill.calcReturn(level + addLevel);
+                    addLevel--;
+                }
+                return new int[]{addLevel, addXp};
+            } else {
+                if (level - 1 < skill.getMinLevel()) {
+                    return new int[]{0, 0};
+                } else {
+                    addXp = skill.calcReturn(level);
+                    return new int[]{-1, addXp};
+                }
+            }
+        }
     }
 }

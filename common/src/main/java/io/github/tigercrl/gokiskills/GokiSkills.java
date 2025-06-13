@@ -10,7 +10,6 @@ import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
 import io.github.tigercrl.gokiskills.config.CommonConfig;
 import io.github.tigercrl.gokiskills.config.ConfigUtils;
 import io.github.tigercrl.gokiskills.network.S2CSyncConfigMessage;
-import io.github.tigercrl.gokiskills.skill.ServerSkillInfo;
 import io.github.tigercrl.gokiskills.skill.SkillEvents;
 import io.github.tigercrl.gokiskills.skill.SkillManager;
 import net.fabricmc.api.EnvType;
@@ -40,12 +39,8 @@ public final class GokiSkills {
             LOGGER.info(sb.delete(sb.length() - 2, sb.length()).toString());
         });
         PlayerEvent.PLAYER_JOIN.register(player -> {
-            SkillManager.INFOS.putIfAbsent(player, new ServerSkillInfo(player));
             new S2CSyncConfigMessage(config).sendTo(player);
             SkillManager.getInfo(player).sync(player);
-        });
-        LifecycleEvent.SERVER_LEVEL_UNLOAD.register(level -> {
-            SkillManager.INFOS.clear();
         });
         EntityEvent.LIVING_DEATH.register((entity, source) -> {
             if (entity instanceof ServerPlayer player)

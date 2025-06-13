@@ -2,7 +2,7 @@ package io.github.tigercrl.gokiskills.client.gui.screens;
 
 import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
 import io.github.tigercrl.gokiskills.client.gui.components.SkillButton;
-import io.github.tigercrl.gokiskills.misc.GokiUtils;
+import io.github.tigercrl.gokiskills.misc.GokiPlayer;
 import io.github.tigercrl.gokiskills.skill.ISkill;
 import io.github.tigercrl.gokiskills.skill.SkillManager;
 import net.fabricmc.api.EnvType;
@@ -13,15 +13,15 @@ import net.minecraft.client.gui.screens.LoadingDotsText;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class SkillsMenuScreen extends Screen {
     private static final Component LOADING = Component.translatable("gui.gokiskills.loading.menu");
-    private static final Component LEFT_BOTTOM_1 = System.getProperty("os.name").toLowerCase().contains("mac") ? Component.translatable("gui.gokiskills.help.1.macos") : Component.translatable("gui.gokiskills.help.1");
-    private static final Component LEFT_BOTTOM_2 = Component.translatable("gui.gokiskills.help.2");
-    public static final int HORIZONTAL_SPACING = 11;
-    public static final int VERTICAL_SPACING = 20;
+    private static final Component LEFT_BOTTOM = System.getProperty("os.name").toLowerCase().contains("mac") ? Component.translatable("gui.gokiskills.help.macos") : Component.translatable("gui.gokiskills.help");
+    public static final int HORIZONTAL_SPACING = 10;
+    public static final int VERTICAL_SPACING = HORIZONTAL_SPACING + 7;
 
     public static int playerXp = 0;
 
@@ -53,7 +53,7 @@ public class SkillsMenuScreen extends Screen {
                                 .max().orElse(SkillButton.DEFAULT_HEIGHT)
                 ).toList();
         int height = (skills.size() - 1) * VERTICAL_SPACING + lineHeight.stream().reduce(0, Integer::sum);
-        int yStart = (this.height - height) / 2;
+        int yStart = (this.height - height) / 2 - 5;
         for (int i = 0; i < skills.size(); i++) {
             List<ISkill> row = skills.get(i);
             int y = yStart + i * VERTICAL_SPACING + lineHeight.stream().limit(i).reduce(0, Integer::sum);
@@ -76,7 +76,7 @@ public class SkillsMenuScreen extends Screen {
             loaded = true;
             onLoaded();
         }
-        playerXp = GokiUtils.getPlayerTotalXp(minecraft.player);
+        playerXp = ((GokiPlayer) minecraft.player).getPlayerTotalXp();
         // update info
         if (GokiSkillsClient.lastPlayerInfoUpdated > lastUpdated) {
             lastUpdated = GokiSkillsClient.lastPlayerInfoUpdated;
@@ -102,9 +102,16 @@ public class SkillsMenuScreen extends Screen {
             guiGraphics.drawCenteredString(font, LOADING, width / 2, height / 2 + 6, 16777215);
         } else {
             super.render(guiGraphics, i, j, f);
-            Component RIGHT_BOTTOM = Component.translatable("gui.gokiskills.xp", GokiUtils.getPlayerTotalXp(minecraft.player));
-            guiGraphics.drawString(font, LEFT_BOTTOM_1, 4, height - font.lineHeight * 2 - 4, 16777215);
-            guiGraphics.drawString(font, LEFT_BOTTOM_2, 4, height - font.lineHeight - 4, 16777215);
+            Component[] leftBottoms = Arrays.stream(LEFT_BOTTOM.getString().split("\n")).map(Component::literal).toArray(Component[]::new);
+            for (int k = 0; k < leftBottoms.length; k++) {
+                guiGraphics.drawString(font,
+                        leftBottoms[k],
+                        5,
+                        height - font.lineHeight * (leftBottoms.length - k) - 4,
+                        16777215
+                );
+            }
+            Component RIGHT_BOTTOM = Component.translatable("gui.gokiskills.xp", ((GokiPlayer) minecraft.player).getPlayerTotalXp());
             guiGraphics.drawString(font, RIGHT_BOTTOM, width - font.width(RIGHT_BOTTOM) - 4, height - font.lineHeight - 4, 16777215);
             // tooltip
             for (int k = 0; k < children().size(); k++) {

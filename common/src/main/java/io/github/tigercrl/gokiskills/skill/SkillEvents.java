@@ -1,6 +1,7 @@
 package io.github.tigercrl.gokiskills.skill;
 
 import dev.architectury.event.events.common.PlayerEvent;
+import io.github.tigercrl.gokiskills.misc.GokiEvents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -23,9 +24,9 @@ public class SkillEvents {
             updateAttributes(player);
             player.setHealth(player.getMaxHealth());
         });
-        ServerSkillInfo.UPDATE.register((skill, player, newLevel, oldLevel, info) ->
+        GokiEvents.UPDATE.register((skill, player, newLevel, oldLevel, info) ->
                 updateAttribute(player, info, skill));
-        ServerSkillInfo.TOGGLE.register((skill, player, newState, info) ->
+        GokiEvents.TOGGLE.register((skill, player, newState, info) ->
                 updateAttribute(player, info, skill));
     }
 
