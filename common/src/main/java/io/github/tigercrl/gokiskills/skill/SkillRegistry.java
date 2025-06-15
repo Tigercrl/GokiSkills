@@ -19,30 +19,54 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-public class SkillManager {
-    public static final ResourceKey<Registry<ISkill>> REGISTRY = ResourceKey.createRegistryKey(new ResourceLocation(GokiSkills.MOD_ID, "skills"));
-    public static Registry<ISkill> SKILL;
+public class SkillRegistry {
+    private static final ResourceKey<Registry<ISkill>> REGISTRY = ResourceKey.createRegistryKey(new ResourceLocation(GokiSkills.MOD_ID, "skills"));
+    private static Registry<ISkill> SKILL;
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public static void init(WritableRegistry<WritableRegistry<?>> writableRegistry, Map<ResourceLocation, Supplier<?>> LOADERS) {
         Lifecycle lifecycle = Lifecycle.stable();
-        SKILL = new MappedRegistry<>(SkillManager.REGISTRY, lifecycle, false);
+        SKILL = new MappedRegistry<>(SkillRegistry.REGISTRY, lifecycle, false);
         LOADERS.put(REGISTRY.location(), () -> Skills.bootstrap(SKILL));
-        writableRegistry.register((ResourceKey<WritableRegistry<?>>) (Object) SkillManager.REGISTRY, (WritableRegistry<?>) SKILL, lifecycle);
+        writableRegistry.register((ResourceKey<WritableRegistry<?>>) (Object) SkillRegistry.REGISTRY, (WritableRegistry<?>) SKILL, lifecycle);
+    }
+
+    public static Map<String, JsonObject> getDefaultConfigs() {
+        Map<String, JsonObject> configs = new HashMap<>();
+        SKILL.entrySet().forEach(entry -> {
+            try {
+                configs.put(entry.getKey().location().toString(), ConfigUtils.toJsonObject(entry.getValue().getDefaultConfig()));
+            } catch (Exception e) {
+                LOGGER.warn("Error creating config for skill {}", entry.getKey().location(), e);
+            }
+        });
+        return Map.copyOf(configs);
+    }
+
+    public static ISkill getSkill(ResourceLocation location) {
+        return SKILL.get(location);
+    }
+
+    public static ResourceLocation getLocation(ISkill skill) {
+        return SKILL.getKey(skill);
+    }
+
+    public static Set<ISkill> getSkills() {
+        return SKILL.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toSet());
     }
 
     @Environment(EnvType.CLIENT)
     public static List<List<ISkill>> getSortedSkills() {
-        Set<Map.Entry<ResourceKey<ISkill>, ISkill>> skills = SKILL.entrySet();
+        Set<ISkill> skills = getSkills();
         Map<ResourceLocation, Map<ResourceLocation, ISkill>> skillCategories = new HashMap<>();
-        skills.forEach(entry -> {
-            ISkill skill = entry.getValue();
+        skills.forEach(skill -> {
             if (skillCategories.containsKey(skill.getCategory())) {
-                skillCategories.get(skill.getCategory()).put(entry.getKey().location(), skill);
+                skillCategories.get(skill.getCategory()).put(skill.getLocation(), skill);
             } else {
                 Map<ResourceLocation, ISkill> category = new HashMap<>();
-                category.put(entry.getKey().location(), skill);
+                category.put(skill.getLocation(), skill);
                 skillCategories.put(skill.getCategory(), category);
             }
         });
@@ -78,17 +102,5 @@ public class SkillManager {
         }
         // compare path
         return location1.getPath().compareTo(location2.getPath());
-    }
-
-    public static Map<String, JsonObject> getDefaultConfigs() {
-        Map<String, JsonObject> configs = new HashMap<>();
-        SKILL.entrySet().forEach(entry -> {
-            try {
-                configs.put(entry.getKey().location().toString(), ConfigUtils.toJsonObject(entry.getValue().getDefaultConfig()));
-            } catch (Exception e) {
-                LOGGER.warn("Error creating config for skill {}", entry.getKey().location(), e);
-            }
-        });
-        return Map.copyOf(configs);
     }
 }

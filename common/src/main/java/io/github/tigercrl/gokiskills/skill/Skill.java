@@ -73,7 +73,7 @@ public class Skill implements ISkill {
 
     @Override
     public ResourceLocation getLocation() {
-        return SkillManager.SKILL.getKey(this);
+        return SkillRegistry.getLocation(this);
     }
 
     @Override

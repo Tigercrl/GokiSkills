@@ -22,6 +22,6 @@ public class C2SRequestSkillInfoMessage extends BaseC2SMessage {
     @Override
     public void handle(NetworkManager.PacketContext context) {
         if (context.getEnv() == EnvType.SERVER)
-            ((GokiServerPlayer) context.getPlayer()).getSkillInfo().sync();
+            ((GokiServerPlayer) context.getPlayer()).syncSkillInfo();
     }
 }

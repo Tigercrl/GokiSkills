@@ -2,9 +2,9 @@ package io.github.tigercrl.gokiskills.client.gui.screens;
 
 import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
 import io.github.tigercrl.gokiskills.client.gui.components.SkillButton;
-import io.github.tigercrl.gokiskills.misc.GokiPlayer;
 import io.github.tigercrl.gokiskills.skill.ISkill;
-import io.github.tigercrl.gokiskills.skill.SkillManager;
+import io.github.tigercrl.gokiskills.skill.SkillHelper;
+import io.github.tigercrl.gokiskills.skill.SkillRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
@@ -45,7 +45,7 @@ public class SkillsMenuScreen extends Screen {
     }
 
     protected void onLoaded() {
-        List<List<ISkill>> skills = SkillManager.getSortedSkills();
+        List<List<ISkill>> skills = SkillRegistry.getSortedSkills();
         List<Integer> lineHeight = skills.stream()
                 .map(row ->
                         row.stream()
@@ -72,11 +72,11 @@ public class SkillsMenuScreen extends Screen {
 
     public void tick() {
         super.tick();
-        if (!loaded && GokiSkillsClient.serverConfig != null && GokiSkillsClient.playerInfo != null) {
+        if (!loaded && GokiSkillsClient.serverConfig != null && SkillHelper.getClientInfoOrNull() != null) {
             loaded = true;
             onLoaded();
         }
-        playerXp = ((GokiPlayer) minecraft.player).getPlayerTotalXp();
+        playerXp = SkillHelper.getClientTotalXp();
         // update info
         if (GokiSkillsClient.lastPlayerInfoUpdated > lastUpdated) {
             lastUpdated = GokiSkillsClient.lastPlayerInfoUpdated;
@@ -111,7 +111,7 @@ public class SkillsMenuScreen extends Screen {
                         16777215
                 );
             }
-            Component RIGHT_BOTTOM = Component.translatable("gui.gokiskills.xp", ((GokiPlayer) minecraft.player).getPlayerTotalXp());
+            Component RIGHT_BOTTOM = Component.translatable("gui.gokiskills.xp", SkillHelper.getClientTotalXp());
             guiGraphics.drawString(font, RIGHT_BOTTOM, width - font.width(RIGHT_BOTTOM) - 4, height - font.lineHeight - 4, 16777215);
             // tooltip
             for (int k = 0; k < children().size(); k++) {

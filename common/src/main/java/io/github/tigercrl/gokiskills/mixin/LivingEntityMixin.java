@@ -1,7 +1,7 @@
 package io.github.tigercrl.gokiskills.mixin;
 
-import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
 import io.github.tigercrl.gokiskills.misc.GokiTags;
+import io.github.tigercrl.gokiskills.skill.SkillHelper;
 import io.github.tigercrl.gokiskills.skill.SkillInfo;
 import io.github.tigercrl.gokiskills.skill.Skills;
 import net.minecraft.ChatFormatting;
@@ -25,6 +25,7 @@ import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PowderSnowBlock;
 import net.minecraft.world.phys.Vec3;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -49,6 +50,9 @@ public abstract class LivingEntityMixin {
     @Shadow
     public abstract boolean hurt(DamageSource damageSource, float f);
 
+    @Shadow
+    @Final
+    public int invulnerableDuration;
     @Unique
     private static final List<LivingEntity> gokiskills$ignoreEntityHurt = new ArrayList<>();
 
@@ -56,7 +60,7 @@ public abstract class LivingEntityMixin {
     public void climbBonus(Vec3 vec3, float f, CallbackInfoReturnable<Vec3> cir) {
         Entity entity = (Entity) (Object) this;
         if (entity instanceof Player player) {
-            SkillInfo info = SkillInfo.getInfo(player);
+            SkillInfo info = SkillHelper.getInfo(player);
             if (info.isEnabled(Skills.CLIMBING) &&
                     (entity.horizontalCollision || jumping) &&
                     (
@@ -77,7 +81,7 @@ public abstract class LivingEntityMixin {
     public void jumpBonus(CallbackInfo ci) {
         Entity entity = (Entity) (Object) this;
         if (entity instanceof Player player) {
-            SkillInfo info = SkillInfo.getInfo(player);
+            SkillInfo info = SkillHelper.getInfo(player);
             double jumpBoostBonus = info.isEnabled(Skills.JUMP_BOOST) ? info.getBonus(Skills.JUMP_BOOST) : 0;
             double leaperBonus = info.isEnabled(Skills.LEAPER) ? info.getBonus(Skills.LEAPER) : 0;
             player.setDeltaMovement(
@@ -97,7 +101,7 @@ public abstract class LivingEntityMixin {
         }
         // profession
         if (source.getEntity() instanceof ServerPlayer player) {
-            SkillInfo info = ((GokiServerPlayer) player).getSkillInfo();
+            SkillInfo info = SkillHelper.getInfo(player);
             ItemStack item = player.getMainHandItem();
             if (info.isEnabled(ONE_HIT)) {
                 double bonus = info.getBonus(ONE_HIT);
@@ -145,7 +149,7 @@ public abstract class LivingEntityMixin {
         }
         // protection
         if (entity instanceof ServerPlayer player && !player.isInvulnerableTo(source) && !player.gameMode.isCreative()) {
-            SkillInfo info = ((GokiServerPlayer) player).getSkillInfo();
+            SkillInfo info = SkillHelper.getInfo(player);
             if (info.isEnabled(DODGE) && source.is(GokiTags.CAN_DODGE)) {
                 if (Math.random() < info.getBonus(DODGE)) {
                     player.connection.send(
@@ -159,7 +163,9 @@ public abstract class LivingEntityMixin {
                             SoundEvents.PLAYER_ATTACK_NODAMAGE, SoundSource.PLAYERS,
                             1.0f, 1.0f
                     );
+                    ((EntityAccessor) this).setInvulnerableTime(20);
                     cir.setReturnValue(false);
+                    return;
                 }
             }
             if (info.isEnabled(BLAST_PROTECTION) && source.is(DamageTypeTags.IS_EXPLOSION)) {
@@ -186,7 +192,7 @@ public abstract class LivingEntityMixin {
     @Inject(method = "calculateFallDamage", at = @At("RETURN"), cancellable = true)
     public void jumpBoostDamage(float f, float g, CallbackInfoReturnable<Integer> cir) {
         if ((LivingEntity) (Object) this instanceof Player p && cir.getReturnValue() > 0) {
-            SkillInfo info = SkillInfo.getInfo(p);
+            SkillInfo info = SkillHelper.getInfo(p);
             if (info.isEnabled(Skills.JUMP_BOOST)) {
                 double bonus = info.getBonus(Skills.JUMP_BOOST);
                 if (bonus > 0) {

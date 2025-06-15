@@ -1,8 +1,12 @@
 package io.github.tigercrl.gokiskills.skill;
 
-import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
+import io.github.tigercrl.gokiskills.GokiSkills;
 import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
+import io.github.tigercrl.gokiskills.misc.GokiUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -16,25 +20,27 @@ import java.util.Set;
 public class SkillInfo {
     public final int SCHEMA_VERSION = 1;
 
-    protected final Map<ResourceLocation, Integer> levels;
-    protected final Set<ResourceLocation> disabled;
+    private final Player player;
+    private final Map<ResourceLocation, Integer> levels;
+    private final Set<ResourceLocation> disabled;
 
-    public SkillInfo() {
-        this(new HashMap<>(), new HashSet<>());
+    public SkillInfo(Player player) {
+        this(player, new HashMap<>(), new HashSet<>());
     }
 
-    protected SkillInfo(Map<ResourceLocation, Integer> levels, Set<ResourceLocation> disabled) {
+    protected SkillInfo(Player player, Map<ResourceLocation, Integer> levels, Set<ResourceLocation> disabled) {
+        this.player = player;
         this.levels = levels;
         this.disabled = disabled;
+        SkillRegistry.getSkills().forEach(skill -> levels.putIfAbsent(skill.getLocation(), skill.getDefaultLevel()));
     }
 
     public int getLevel(ISkill skill) {
-        levels.putIfAbsent(skill.getLocation(), skill.getDefaultLevel());
         return levels.get(skill.getLocation());
     }
 
     public int getLevel(ResourceLocation location) {
-        return getLevel(SkillManager.SKILL.get(location));
+        return getLevel(SkillRegistry.getSkill(location));
     }
 
     @Nullable
@@ -44,14 +50,17 @@ public class SkillInfo {
 
     @Nullable
     public Double getBonus(ResourceLocation location) {
-        return getBonus(SkillManager.SKILL.get(location));
+        return getBonus(SkillRegistry.getSkill(location));
     }
 
     public void setLevel(ISkill skill, int level) {
+        levels.put(skill.getLocation(), level);
+        SkillEvents.UPDATE.invoker().update(skill, player, level, getLevel(skill), this);
+        sync();
     }
 
     public void setLevel(ResourceLocation location, int level) {
-        setLevel(SkillManager.SKILL.get(location), level);
+        setLevel(SkillRegistry.getSkill(location), level);
     }
 
     public boolean isEnabled(ISkill skill) {
@@ -59,25 +68,61 @@ public class SkillInfo {
     }
 
     public boolean isEnabled(ResourceLocation location) {
-        return isEnabled(SkillManager.SKILL.get(location));
+        return isEnabled(SkillRegistry.getSkill(location));
     }
 
     public void toggle(ISkill skill) {
+        if (isEnabled(skill.getLocation())) {
+            disabled.add(skill.getLocation());
+        } else {
+            disabled.remove(skill.getLocation());
+        }
+        SkillEvents.TOGGLE.invoker().toggle(skill, player, isEnabled(skill), this);
+        sync();
     }
 
     public void toggle(ResourceLocation location) {
-        toggle(SkillManager.SKILL.get(location));
+        toggle(SkillRegistry.getSkill(location));
     }
 
     public void onDeath() {
+        if (GokiSkills.config.lostLevelOnDeath.enabled) {
+            levels.forEach((key, value) -> {
+                boolean lost = Math.random() < GokiSkills.config.lostLevelOnDeath.chance;
+                if (lost) {
+                    ISkill s = SkillRegistry.getSkill(key);
+                    int lostLevel = Math.min(
+                            GokiUtils.randomInt(
+                                    GokiSkills.config.lostLevelOnDeath.minLevel,
+                                    GokiSkills.config.lostLevelOnDeath.maxLevel + 1
+                            ), value - s.getMinLevel()
+                    );
+                    if (lostLevel > 0) {
+                        levels.put(key, value - lostLevel);
+                        sync();
+                    }
+                }
+            });
+        }
     }
 
     public void sync() {
+        if (player instanceof GokiServerPlayer gp) {
+            gp.syncSkillInfo();
+        }
     }
 
     @Nullable
     public CompoundTag toNbt() {
-        return null;
+        CompoundTag compoundTag = new CompoundTag();
+        CompoundTag levelTag = new CompoundTag();
+        levels.forEach((key, value) -> levelTag.putInt(key.toString(), value));
+        compoundTag.put("levels", levelTag);
+        ListTag disabledTag = new ListTag();
+        disabled.forEach(key -> disabledTag.add(StringTag.valueOf(key.toString())));
+        compoundTag.put("disabled", disabledTag);
+        compoundTag.putInt("schema", SCHEMA_VERSION);
+        return compoundTag;
     }
 
     public void writeBuf(FriendlyByteBuf buf) {
@@ -85,60 +130,40 @@ public class SkillInfo {
         buf.writeCollection(disabled, FriendlyByteBuf::writeResourceLocation);
     }
 
-    public static SkillInfo fromBuf(FriendlyByteBuf buf) {
+    public static SkillInfo fromBuf(Player player, FriendlyByteBuf buf) {
         return new SkillInfo(
+                player,
                 new HashMap<>(buf.readMap(FriendlyByteBuf::readResourceLocation, FriendlyByteBuf::readVarInt)),
                 buf.readCollection(HashSet::new, FriendlyByteBuf::readResourceLocation)
         );
     }
 
-    /**
-     * Calculate the cost of upgrading / downgrading skill
-     * @param skill skill
-     * @param level current skill level
-     * @param xp current experience points
-     * @param upgrade is upgrade / downgrade
-     * @param fast is fast upgrade / downgrade
-     * @return [addLevel, addXp]
-     */
-    public static int[] calcOperation(ISkill skill, int level, int xp, boolean upgrade, boolean fast) {
-        int addXp = 0;
-        int addLevel = 0;
-        if (upgrade) {
-            if (fast) {
-                while (level + addLevel < skill.getMaxLevel()) {
-                    int thisCost = skill.calcCost(level + addLevel);
-                    if (-addXp + thisCost > xp) break;
-                    addLevel++;
-                    addXp -= thisCost;
-                }
-                return new int[]{addLevel, addXp};
-            } else {
-                addXp = skill.calcCost(level);
-                if (addXp > xp || level + 1 > skill.getMaxLevel()) return new int[]{0, 0};
-                else return new int[]{1, -addXp};
+    public static SkillInfo fromNbt(Player player, CompoundTag compoundTag) {
+        Map<ResourceLocation, Integer> levels = new HashMap<>();
+        Set<ResourceLocation> disabled = new HashSet<>();
+        if (compoundTag.contains("schema")) {
+            switch (compoundTag.getInt("schema")) {
+                case 1:
+                    readVer1(compoundTag, levels, disabled);
             }
         } else {
-            if (fast) {
-                while (level + addLevel > skill.getMinLevel()) {
-                    addXp += skill.calcReturn(level + addLevel);
-                    addLevel--;
-                }
-                return new int[]{addLevel, addXp};
+            if (compoundTag.contains("levels")) {
+                readVer1(compoundTag, levels, disabled);
             } else {
-                if (level - 1 < skill.getMinLevel()) {
-                    return new int[]{0, 0};
-                } else {
-                    addXp = skill.calcReturn(level);
-                    return new int[]{-1, addXp};
-                }
+                readVer0(compoundTag, levels);
             }
         }
+        return new SkillInfo(player, levels, disabled);
     }
 
-    public static SkillInfo getInfo(Player player) {
-        if (player.level().isClientSide())
-            return GokiSkillsClient.playerInfo == null ? new SkillInfo() : GokiSkillsClient.playerInfo;
-        return ((GokiServerPlayer) player).getSkillInfo();
+    private static void readVer0(CompoundTag compoundTag, Map<ResourceLocation, Integer> levels) {
+        compoundTag.getAllKeys().forEach(key -> levels.put(ResourceLocation.tryParse(key), compoundTag.getInt(key)));
+    }
+
+    private static void readVer1(CompoundTag compoundTag, Map<ResourceLocation, Integer> levels, Set<ResourceLocation> disabled) {
+        CompoundTag levelTag = compoundTag.getCompound("levels");
+        levelTag.getAllKeys().forEach(key -> levels.put(ResourceLocation.tryParse(key), levelTag.getInt(key)));
+        if (compoundTag.contains("disabled"))
+            compoundTag.getList("disabled", Tag.TAG_STRING).forEach(tag -> disabled.add(ResourceLocation.tryParse(tag.getAsString())));
     }
 }

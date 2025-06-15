@@ -4,9 +4,11 @@ import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.simple.BaseS2CMessage;
 import dev.architectury.networking.simple.MessageType;
 import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
+import io.github.tigercrl.gokiskills.skill.SkillHelper;
 import io.github.tigercrl.gokiskills.skill.SkillInfo;
 import net.fabricmc.api.EnvType;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 
 import static io.github.tigercrl.gokiskills.network.GokiNetwork.SYNC_SKILL_INFO;
@@ -19,7 +21,7 @@ public class S2CSyncSkillInfoMessage extends BaseS2CMessage {
     }
 
     public S2CSyncSkillInfoMessage(FriendlyByteBuf buf) {
-        info = SkillInfo.fromBuf(buf);
+        info = SkillInfo.fromBuf(Minecraft.getInstance().player, buf);
     }
 
     @Override
@@ -35,7 +37,7 @@ public class S2CSyncSkillInfoMessage extends BaseS2CMessage {
     @Override
     public void handle(NetworkManager.PacketContext context) {
         if (context.getEnv() == EnvType.CLIENT) {
-            GokiSkillsClient.playerInfo = info;
+            SkillHelper.setClientSkillInfo(info);
             GokiSkillsClient.lastPlayerInfoUpdated = Util.getMillis();
         }
     }

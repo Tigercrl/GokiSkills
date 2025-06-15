@@ -3,7 +3,7 @@ package io.github.tigercrl.gokiskills.network;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.simple.BaseC2SMessage;
 import dev.architectury.networking.simple.MessageType;
-import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
+import io.github.tigercrl.gokiskills.skill.SkillHelper;
 import net.fabricmc.api.EnvType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +34,7 @@ public class C2SFastDowngradeMessage extends BaseC2SMessage {
     @Override
     public void handle(NetworkManager.PacketContext context) {
         if (context.getEnv() == EnvType.SERVER) {
-            ((GokiServerPlayer) context.getPlayer()).updateSkill(location, false, true);
+            SkillHelper.updateSkill(context.getPlayer(), location, false, true);
         }
     }
 }

@@ -1,11 +1,10 @@
 package io.github.tigercrl.gokiskills.client.gui.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
 import io.github.tigercrl.gokiskills.client.gui.screens.SkillsMenuScreen;
 import io.github.tigercrl.gokiskills.network.*;
 import io.github.tigercrl.gokiskills.skill.Skill;
-import io.github.tigercrl.gokiskills.skill.SkillInfo;
+import io.github.tigercrl.gokiskills.skill.SkillHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -59,7 +58,7 @@ public class SkillButton extends Button {
             waitForUpdate = true;
             new C2SToggleMessage(skill.getLocation()).sendToServer();
         } else {
-            int[] result = SkillInfo.calcOperation(skill, level, SkillsMenuScreen.playerXp, !hasControlDown, hasShiftDown);
+            int[] result = SkillHelper.calcOperation(skill, level, SkillsMenuScreen.playerXp, !hasControlDown, hasShiftDown);
             if (!waitForUpdate && result[0] != 0) {
                 if (hasControlDown && hasShiftDown) {
                     if (level > skill.getMinLevel()) {
@@ -89,7 +88,7 @@ public class SkillButton extends Button {
     public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
         // button
         boolean isHovered = this.isHovered();
-        boolean maxLevel = GokiSkillsClient.playerInfo.getLevel(skill)
+        boolean maxLevel = SkillHelper.getClientInfo().getLevel(skill)
                 == skill.getMaxLevel();
         boolean operation = hasControlDown || hasShiftDown || hasAltDown;
 
@@ -139,12 +138,12 @@ public class SkillButton extends Button {
     }
 
     public void renderTooltip(GuiGraphics guiGraphics, int i, int j) {
-        boolean maxLevel = GokiSkillsClient.playerInfo.getLevel(skill)
+        boolean maxLevel = SkillHelper.getClientInfo().getLevel(skill)
                 == skill.getMaxLevel();
         if (isHovered) {
             Component click = null;
             Component cost = null;
-            int[] result = SkillInfo.calcOperation(skill, level, SkillsMenuScreen.playerXp, !hasControlDown, hasShiftDown);
+            int[] result = SkillHelper.calcOperation(skill, level, SkillsMenuScreen.playerXp, !hasControlDown, hasShiftDown);
 
             if (hasAltDown) {
                 if (enabled) click = Component.translatable("gui.gokiskills.toggle.off")
@@ -201,8 +200,8 @@ public class SkillButton extends Button {
     }
 
     public void updateLevel() {
-        level = GokiSkillsClient.playerInfo.getLevel(skill);
-        enabled = GokiSkillsClient.playerInfo.isEnabled(skill.getLocation());
+        level = SkillHelper.getClientInfo().getLevel(skill);
+        enabled = SkillHelper.getClientInfo().isEnabled(skill.getLocation());
         waitForUpdate = false;
     }
 }

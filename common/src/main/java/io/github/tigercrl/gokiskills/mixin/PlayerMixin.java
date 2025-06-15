@@ -1,6 +1,7 @@
 package io.github.tigercrl.gokiskills.mixin;
 
 import io.github.tigercrl.gokiskills.misc.GokiPlayer;
+import io.github.tigercrl.gokiskills.skill.SkillInfo;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,10 +19,23 @@ public abstract class PlayerMixin implements GokiPlayer {
     @Shadow
     public float experienceProgress;
 
-    @Override
     @Unique
+    private SkillInfo gokiskills$info;
+
+    @Unique
+    @Override
     public int getPlayerTotalXp() {
         return getTotalXpNeededForLevel(experienceLevel) +
                 Mth.floor(experienceProgress * getXpNeededForNextLevel(experienceLevel));
+    }
+
+    @Override
+    public SkillInfo getSkillInfo() {
+        return gokiskills$info;
+    }
+
+    @Override
+    public void setSkillInfo(SkillInfo skillInfo) {
+        gokiskills$info = skillInfo;
     }
 }
