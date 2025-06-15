@@ -4,9 +4,7 @@ import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Lifecycle;
 import io.github.tigercrl.gokiskills.GokiSkills;
-import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
 import io.github.tigercrl.gokiskills.config.ConfigUtils;
-import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.MappedRegistry;
@@ -14,7 +12,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
@@ -93,11 +90,5 @@ public class SkillManager {
             }
         });
         return Map.copyOf(configs);
-    }
-
-    public static SkillInfo getInfo(Player player) {
-        if (player.level().isClientSide())
-            return GokiSkillsClient.playerInfo == null ? new SkillInfo() : GokiSkillsClient.playerInfo;
-        return ((GokiServerPlayer) player).getSkillInfo();
     }
 }

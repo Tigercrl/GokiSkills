@@ -57,29 +57,29 @@ public class SkillButton extends Button {
     public void onPress() {
         if (hasAltDown) {
             waitForUpdate = true;
-            new C2SToggleMessage(skill.getResourceLocation()).sendToServer();
+            new C2SToggleMessage(skill.getLocation()).sendToServer();
         } else {
             int[] result = SkillInfo.calcOperation(skill, level, SkillsMenuScreen.playerXp, !hasControlDown, hasShiftDown);
             if (!waitForUpdate && result[0] != 0) {
                 if (hasControlDown && hasShiftDown) {
                     if (level > skill.getMinLevel()) {
                         waitForUpdate = true;
-                        new C2SFastDowngradeMessage(skill.getResourceLocation()).sendToServer();
+                        new C2SFastDowngradeMessage(skill.getLocation()).sendToServer();
                     }
                 } else if (hasControlDown) {
                     if (level > skill.getMinLevel()) {
                         waitForUpdate = true;
-                        new C2SDowngradeMessage(skill.getResourceLocation()).sendToServer();
+                        new C2SDowngradeMessage(skill.getLocation()).sendToServer();
                     }
                 } else if (hasShiftDown) {
                     if (level < skill.getMaxLevel()) {
                         waitForUpdate = true;
-                        new C2SFastUpgradeMessage(skill.getResourceLocation()).sendToServer();
+                        new C2SFastUpgradeMessage(skill.getLocation()).sendToServer();
                     }
                 } else {
                     if (level < skill.getMaxLevel()) {
                         waitForUpdate = true;
-                        new C2SUpgradeMessage(skill.getResourceLocation()).sendToServer();
+                        new C2SUpgradeMessage(skill.getLocation()).sendToServer();
                     }
                 }
             }
@@ -89,7 +89,7 @@ public class SkillButton extends Button {
     public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
         // button
         boolean isHovered = this.isHovered();
-        boolean maxLevel = GokiSkillsClient.playerInfo.getLevel(skill.getResourceLocation(), skill.getDefaultLevel())
+        boolean maxLevel = GokiSkillsClient.playerInfo.getLevel(skill)
                 == skill.getMaxLevel();
         boolean operation = hasControlDown || hasShiftDown || hasAltDown;
 
@@ -139,7 +139,7 @@ public class SkillButton extends Button {
     }
 
     public void renderTooltip(GuiGraphics guiGraphics, int i, int j) {
-        boolean maxLevel = GokiSkillsClient.playerInfo.getLevel(skill.getResourceLocation(), skill.getDefaultLevel())
+        boolean maxLevel = GokiSkillsClient.playerInfo.getLevel(skill)
                 == skill.getMaxLevel();
         if (isHovered) {
             Component click = null;
@@ -201,8 +201,8 @@ public class SkillButton extends Button {
     }
 
     public void updateLevel() {
-        level = GokiSkillsClient.playerInfo.getLevel(skill.getResourceLocation(), skill.getDefaultLevel());
-        enabled = GokiSkillsClient.playerInfo.isEnabled(skill.getResourceLocation());
+        level = GokiSkillsClient.playerInfo.getLevel(skill);
+        enabled = GokiSkillsClient.playerInfo.isEnabled(skill.getLocation());
         waitForUpdate = false;
     }
 }

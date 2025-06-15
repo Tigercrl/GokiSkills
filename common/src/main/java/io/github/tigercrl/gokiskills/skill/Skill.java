@@ -24,7 +24,6 @@ public class Skill implements ISkill {
 
     public static final Function<Integer, Double> DEFAULT_CALC_BONUS = (level) -> 0.04 * level;
 
-    private final ResourceLocation location;
     private final ResourceLocation category;
     private final Function<Integer, Double> calcCost;
     private final BiFunction<Integer, Function<Integer, Double>, Double> calcReturn;
@@ -65,17 +64,16 @@ public class Skill implements ISkill {
         this.description = description;
         this.configClass = configClass;
         this.defaultConfig = defaultConfig;
-        this.location = SkillManager.SKILL.getKey(this);
-    }
-
-    @Override
-    public ResourceLocation getResourceLocation() {
-        return SkillManager.SKILL.getKey(this);
     }
 
     @Override
     public boolean isEnabled() {
         return GokiSkills.getConfig() != null && getConfig().enabled;
+    }
+
+    @Override
+    public ResourceLocation getLocation() {
+        return SkillManager.SKILL.getKey(this);
     }
 
     @Override
@@ -164,28 +162,16 @@ public class Skill implements ISkill {
     }
 
     @Override
-    public ResourceLocation getLocation() {
-        return location;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (Skill) obj;
-        return Objects.equals(this.location, that.location);
+        return Objects.equals(getLocation(), that.getLocation());
     }
 
     @Override
     public int hashCode() {
-        return location.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Skill[" +
-                "resourceLocation=" + location + ", " +
-                "category=" + category + ']';
+        return getLocation().hashCode();
     }
 
     public static class Builder {

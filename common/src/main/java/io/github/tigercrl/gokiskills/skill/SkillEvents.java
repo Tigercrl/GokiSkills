@@ -2,6 +2,7 @@ package io.github.tigercrl.gokiskills.skill;
 
 import dev.architectury.event.events.common.PlayerEvent;
 import io.github.tigercrl.gokiskills.misc.GokiEvents;
+import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -31,7 +32,7 @@ public class SkillEvents {
     }
 
     public static void updateAttributes(ServerPlayer player) {
-        SkillInfo info = SkillManager.getInfo(player);
+        SkillInfo info = ((GokiServerPlayer) player).getSkillInfo();
         updateAttribute(player, info, KNOCKBACK_RESISTANCE);
         updateAttribute(player, info, HEALTH);
     }

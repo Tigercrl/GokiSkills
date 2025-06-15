@@ -3,6 +3,7 @@ package io.github.tigercrl.gokiskills.mixin;
 import io.github.tigercrl.gokiskills.misc.GokiPlayer;
 import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
 import io.github.tigercrl.gokiskills.skill.ISkill;
+import io.github.tigercrl.gokiskills.skill.ServerSkillInfo;
 import io.github.tigercrl.gokiskills.skill.SkillInfo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
@@ -23,6 +24,7 @@ public abstract class ServerPlayerMixin implements GokiServerPlayer {
 
     @Shadow
     public ServerGamePacketListenerImpl connection;
+
     @Unique
     @NotNull
     private SkillInfo gokiskills$info = new SkillInfo();
@@ -35,7 +37,7 @@ public abstract class ServerPlayerMixin implements GokiServerPlayer {
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     public void readSkillsInfo(CompoundTag compoundTag, CallbackInfo ci) {
         if (compoundTag.contains("GokiSkills"))
-            gokiskills$info = SkillInfo.fromNbt(compoundTag.getCompound("GokiSkills"));
+            gokiskills$info = ServerSkillInfo.fromNbt(compoundTag.getCompound("GokiSkills"), (ServerPlayer) (Object) this);
     }
 
     @Override
@@ -55,7 +57,6 @@ public abstract class ServerPlayerMixin implements GokiServerPlayer {
 
         gokiskills$info.setLevel(skill, level + result[0]);
         giveExperiencePoints(result[1]);
-        gokiskills$info.sync(p);
         connection.send(
                 new ClientboundSetExperiencePacket(
                         p.experienceProgress,
