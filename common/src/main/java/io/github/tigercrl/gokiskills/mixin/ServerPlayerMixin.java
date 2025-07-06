@@ -1,5 +1,6 @@
 package io.github.tigercrl.gokiskills.mixin;
 
+import io.github.tigercrl.gokiskills.misc.GokiPlayer;
 import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
 import io.github.tigercrl.gokiskills.network.S2CSyncSkillInfoMessage;
 import io.github.tigercrl.gokiskills.skill.ISkill;
@@ -25,6 +26,14 @@ public abstract class ServerPlayerMixin implements GokiServerPlayer {
     @Shadow
     public ServerGamePacketListenerImpl connection;
 
+    @Inject(method = "loadGameTypes", at = @At("TAIL"))
+    public void initSkillsInfo(CompoundTag compoundTag, CallbackInfo ci) {
+        if (compoundTag == null) { // new player
+            Player p = (Player) (Object) this;
+            SkillHelper.setSkillInfo(p, new SkillInfo(p));
+        }
+    }
+
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     public void saveSkillsInfo(CompoundTag compoundTag, CallbackInfo ci) {
         CompoundTag tag = SkillHelper.getInfo((Player) (Object) this).toNbt();
@@ -37,11 +46,23 @@ public abstract class ServerPlayerMixin implements GokiServerPlayer {
         SkillHelper.setSkillInfo(p, SkillInfo.fromNbt(p, compoundTag.getCompound("GokiSkills")));
     }
 
+    @Inject(method = "die", at = @At("HEAD"))
+    public void onDeath(CallbackInfo ci) {
+        ((GokiPlayer) this).getSkillInfo().onDeath();
+        syncSkillInfo();
+    }
+
+    @Inject(method = "restoreFrom", at = @At("HEAD"))
+    public void restoreFrom(ServerPlayer serverPlayer, boolean bl, CallbackInfo ci) {
+        SkillHelper.setSkillInfo((Player) (Object) this, ((GokiPlayer) serverPlayer).getSkillInfo());
+    }
+
+
     @Override
     @Unique
     public void updateSkill(ISkill skill, boolean upgrade, boolean fast) {
         ServerPlayer p = (ServerPlayer) (Object) this;
-        SkillInfo info = SkillHelper.getInfo(p);
+        SkillInfo info = ((GokiPlayer) this).getSkillInfo();
 
         int level = info.getLevel(skill);
         int[] result = SkillHelper.calcOperation(skill, level, SkillHelper.getTotalXp(p), upgrade, fast);

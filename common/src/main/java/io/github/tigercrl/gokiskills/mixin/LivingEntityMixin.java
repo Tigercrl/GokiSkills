@@ -25,7 +25,6 @@ import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PowderSnowBlock;
 import net.minecraft.world.phys.Vec3;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -47,12 +46,6 @@ public abstract class LivingEntityMixin {
     @Shadow
     public abstract boolean onClimbable();
 
-    @Shadow
-    public abstract boolean hurt(DamageSource damageSource, float f);
-
-    @Shadow
-    @Final
-    public int invulnerableDuration;
     @Unique
     private static final List<LivingEntity> gokiskills$ignoreEntityHurt = new ArrayList<>();
 
@@ -106,17 +99,8 @@ public abstract class LivingEntityMixin {
             if (info.isEnabled(ONE_HIT)) {
                 double bonus = info.getBonus(ONE_HIT);
                 if (entity.getHealth() < entity.getMaxHealth() * 0.4 * bonus && Math.random() < bonus) {
-                    if (entity.isInvulnerableTo(source)) {
-                        source = entity.damageSources().generic();
-                        if (entity.isInvulnerableTo(source))
-                            source = entity.damageSources().genericKill();
-                    }
-                    for (int i = 0; i < 500; i++) {
-                        if (entity.isDeadOrDying()) {
-                            break;
-                        }
-                        gokiskills$hurtEntity(entity, source, entity.getMaxHealth());
-                    }
+                    entity.setHealth(0);
+                    entity.die(source);
                     player.connection.send(
                             new ClientboundSetActionBarTextPacket(
                                     Component.translatable("skill.gokiskills.one_hit.message")
