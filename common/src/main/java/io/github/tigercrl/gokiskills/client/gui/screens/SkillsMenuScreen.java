@@ -1,5 +1,6 @@
 package io.github.tigercrl.gokiskills.client.gui.screens;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
 import io.github.tigercrl.gokiskills.client.gui.components.SkillButton;
 import io.github.tigercrl.gokiskills.skill.ISkill;
@@ -8,7 +9,6 @@ import io.github.tigercrl.gokiskills.skill.SkillRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.LoadingDotsText;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -65,7 +65,7 @@ public class SkillsMenuScreen extends Screen {
             for (int j = 0; j < row.size(); j++) {
                 int x = xStart + j * HORIZONTAL_SPACING + widths.stream().limit(j).reduce(0, Integer::sum);
                 ISkill skill = row.get(j);
-                addRenderableWidget(skill.getWidget(x, y));
+                addRenderableWidget(skill.getWidget(this, x, y));
             }
         }
     }
@@ -88,9 +88,9 @@ public class SkillsMenuScreen extends Screen {
         }
     }
 
-    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        this.renderBackground(guiGraphics);
-        guiGraphics.drawCenteredString(font, title, width / 2, 15, 16777215);
+    public void render(PoseStack poseStack, int i, int j, float f) {
+        this.renderBackground(poseStack);
+        drawCenteredString(poseStack, font, title, width / 2, 15, 16777215);
 
         SkillButton.hasControlDown = hasControlDown();
         SkillButton.hasShiftDown = hasShiftDown();
@@ -98,25 +98,24 @@ public class SkillsMenuScreen extends Screen {
 
         if (!loaded) {
             String s = LoadingDotsText.get(Util.getMillis());
-            guiGraphics.drawCenteredString(font, s, width / 2, height / 2 - 6, 8421504);
-            guiGraphics.drawCenteredString(font, LOADING, width / 2, height / 2 + 6, 16777215);
+            drawCenteredString(poseStack, font, s, width / 2, height / 2 - 6, 8421504);
+            drawCenteredString(poseStack, font, LOADING, width / 2, height / 2 + 6, 16777215);
         } else {
-            super.render(guiGraphics, i, j, f);
+            super.render(poseStack, i, j, f);
             Component[] leftBottoms = Arrays.stream(LEFT_BOTTOM.getString().split("\n")).map(Component::literal).toArray(Component[]::new);
             for (int k = 0; k < leftBottoms.length; k++) {
-                guiGraphics.drawString(font,
-                        leftBottoms[k],
-                        5,
+                drawString(
+                        poseStack, font, leftBottoms[k], 5,
                         height - font.lineHeight * (leftBottoms.length - k) - 4,
                         16777215
                 );
             }
             Component RIGHT_BOTTOM = Component.translatable("gui.gokiskills.xp", SkillHelper.getClientTotalXp());
-            guiGraphics.drawString(font, RIGHT_BOTTOM, width - font.width(RIGHT_BOTTOM) - 4, height - font.lineHeight - 4, 16777215);
+            drawString(poseStack, font, RIGHT_BOTTOM, width - font.width(RIGHT_BOTTOM) - 4, height - font.lineHeight - 4, 16777215);
             // tooltip
             for (int k = 0; k < children().size(); k++) {
                 if (children().get(k) instanceof SkillButton button) {
-                    button.renderTooltip(guiGraphics, i, j);
+                    button.renderTooltip(poseStack, i, j);
                 }
             }
         }

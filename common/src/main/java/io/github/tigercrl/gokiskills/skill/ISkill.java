@@ -1,6 +1,7 @@
 package io.github.tigercrl.gokiskills.skill;
 
 import io.github.tigercrl.gokiskills.GokiSkills;
+import io.github.tigercrl.gokiskills.client.gui.screens.SkillsMenuScreen;
 import io.github.tigercrl.gokiskills.config.ConfigUtils;
 import io.github.tigercrl.gokiskills.config.GokiSkillConfig;
 import net.fabricmc.api.EnvType;
@@ -31,7 +32,7 @@ public interface ISkill {
     Double calcBonus(int level); // curr level -> bonus
 
     @Environment(EnvType.CLIENT)
-    AbstractWidget getWidget(int x, int y);
+    AbstractWidget getWidget(SkillsMenuScreen screen, int x, int y);
 
     @Environment(EnvType.CLIENT)
     int[] getWidgetSize(); // [width, height]

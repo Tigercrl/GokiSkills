@@ -1,6 +1,7 @@
 package io.github.tigercrl.gokiskills.client.gui.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.tigercrl.gokiskills.client.gui.screens.SkillsMenuScreen;
 import io.github.tigercrl.gokiskills.network.*;
 import io.github.tigercrl.gokiskills.skill.Skill;
@@ -9,7 +10,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -17,7 +17,6 @@ import net.minecraft.network.chat.Style;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
 public class SkillButton extends Button {
@@ -42,13 +41,15 @@ public class SkillButton extends Button {
 
     private final Skill skill;
     private boolean waitForUpdate = false;
+    private final OnComponentTooltip onComponentTooltip;
     public int level = 0;
     public boolean enabled = true;
 
-    public SkillButton(int x, int y, Skill skill) {
+    public SkillButton(int x, int y, Skill skill, OnComponentTooltip onComponentTooltip) {
         super(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT, CommonComponents.EMPTY, b -> {
-        }, DEFAULT_NARRATION);
+        });
         this.skill = skill;
+        this.onComponentTooltip = onComponentTooltip;
         updateLevel();
     }
 
@@ -85,42 +86,47 @@ public class SkillButton extends Button {
         }
     }
 
-    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+    @Override
+    public void renderButton(PoseStack poseStack, int i, int j, float f) {
         // button
-        boolean isHovered = this.isHovered();
+        boolean isHovered = this.isHovered;
         boolean maxLevel = SkillHelper.getClientInfo().getLevel(skill)
                 == skill.getMaxLevel();
         boolean operation = hasControlDown || hasShiftDown || hasAltDown;
 
         RenderSystem.enableBlend(); // enable transparency
         // bg
-        guiGraphics.blit(
-                skill.getBackground().getItem(isHovered, maxLevel, operation),
-                this.getX(), this.getY(),
+        RenderSystem.setShaderTexture(0, skill.getBackground().getItem(isHovered, maxLevel, operation));
+        blit(
+                poseStack,
+                x, y,
                 0, 0, 0, width, height,
                 skill.getBackground().getTextureWidth(),
                 skill.getBackground().getTextureHeight()
         );
         // overlay
-        guiGraphics.blit(
-                skill.getOverlay().getItem(isHovered, maxLevel, operation),
-                this.getX(), this.getY(),
+        RenderSystem.setShaderTexture(0, skill.getOverlay().getItem(isHovered, maxLevel, operation));
+        blit(
+                poseStack,
+                x, y,
                 0, 0, 0, width, height,
                 skill.getOverlay().getTextureWidth(),
                 skill.getOverlay().getTextureHeight()
         );
         // icon
-        guiGraphics.blit(
-                skill.getIcon().getItem(isHovered, maxLevel, operation),
-                this.getX() + DEFAULT_ICON_PADDING, this.getY() + DEFAULT_ICON_PADDING,
+        RenderSystem.setShaderTexture(0, skill.getIcon().getItem(isHovered, maxLevel, operation));
+        blit(
+                poseStack,
+                x + DEFAULT_ICON_PADDING, y + DEFAULT_ICON_PADDING,
                 0, 0, width - DEFAULT_ICON_PADDING * 2, height - DEFAULT_ICON_PADDING * 2,
                 skill.getIcon().getTextureWidth(),
                 skill.getIcon().getTextureHeight()
         );
         // frame
-        guiGraphics.blit(
-                skill.getFrame().getItem(isHovered, maxLevel, operation),
-                this.getX() - 1, this.getY() - 1,
+        RenderSystem.setShaderTexture(0, skill.getFrame().getItem(isHovered, maxLevel, operation));
+        blit(
+                poseStack,
+                x - 1, y - 1,
                 0, 0, 0, width + 2, height + 2,
                 skill.getFrame().getTextureWidth(),
                 skill.getFrame().getTextureHeight()
@@ -128,16 +134,17 @@ public class SkillButton extends Button {
         RenderSystem.disableBlend();
 
         // level
-        guiGraphics.drawCenteredString(
+        drawCenteredString(
+                poseStack,
                 Minecraft.getInstance().font,
                 waitForUpdate ? LOADING : (enabled ? Component.literal(level + "/" + skill.getMaxLevel()) : DISABLED),
-                getX() + width / 2,
-                getY() + height + 3,
+                x + width / 2,
+                y + height + 3,
                 (!waitForUpdate && maxLevel) ? -9145 : 16777215
         );
     }
 
-    public void renderTooltip(GuiGraphics guiGraphics, int i, int j) {
+    public void renderTooltip(PoseStack poseStack, int i, int j) {
         boolean maxLevel = SkillHelper.getClientInfo().getLevel(skill)
                 == skill.getMaxLevel();
         if (isHovered) {
@@ -195,7 +202,7 @@ public class SkillButton extends Button {
             if (click != null) tooltipComponents.add(click);
             if (cost != null) tooltipComponents.add(cost);
 
-            guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltipComponents, Optional.empty(), i, j);
+            onComponentTooltip.onComponentTooltip(this, tooltipComponents, poseStack, i, j);
         }
     }
 
@@ -203,5 +210,9 @@ public class SkillButton extends Button {
         level = SkillHelper.getClientInfo().getLevel(skill);
         enabled = SkillHelper.getClientInfo().isEnabled(skill.getLocation());
         waitForUpdate = false;
+    }
+
+    public interface OnComponentTooltip {
+        void onComponentTooltip(SkillButton button, List<Component> tooltip, PoseStack poseStack, int mouseX, int mouseY);
     }
 }

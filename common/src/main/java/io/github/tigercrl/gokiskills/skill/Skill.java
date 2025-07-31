@@ -1,9 +1,10 @@
 package io.github.tigercrl.gokiskills.skill;
 
 import io.github.tigercrl.gokiskills.GokiSkills;
+import io.github.tigercrl.gokiskills.client.gui.components.SkillButton;
+import io.github.tigercrl.gokiskills.client.gui.screens.SkillsMenuScreen;
 import io.github.tigercrl.gokiskills.client.gui.utils.SkillTexture;
 import io.github.tigercrl.gokiskills.client.gui.utils.SkillTextures;
-import io.github.tigercrl.gokiskills.client.gui.components.SkillButton;
 import io.github.tigercrl.gokiskills.config.GokiSkillConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -115,8 +117,10 @@ public class Skill implements ISkill {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public AbstractWidget getWidget(int x, int y) {
-        return new SkillButton(x, y, this);
+    public AbstractWidget getWidget(SkillsMenuScreen screen, int x, int y) {
+        return new SkillButton(x, y, this, (button, tooltip, poseStack, mouseX, mouseY) -> {
+            screen.renderTooltip(poseStack, tooltip, Optional.empty(), mouseX, mouseY);
+        });
     }
 
     @Override

@@ -1,6 +1,5 @@
 package io.github.tigercrl.gokiskills.mixin;
 
-import io.github.tigercrl.gokiskills.misc.GokiTags;
 import io.github.tigercrl.gokiskills.skill.SkillHelper;
 import io.github.tigercrl.gokiskills.skill.SkillInfo;
 import io.github.tigercrl.gokiskills.skill.Skills;
@@ -11,8 +10,6 @@ import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -22,6 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PowderSnowBlock;
 import net.minecraft.world.phys.Vec3;
@@ -107,7 +105,7 @@ public abstract class LivingEntityMixin {
                                             .withStyle(Style.EMPTY.withColor(ChatFormatting.RED))
                             )
                     );
-                    player.level().playSound(
+                    player.level.playSound(
                             null, player.getX(), player.getY(), player.getZ(),
                             SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.PLAYERS,
                             1.0f, 1.0f
@@ -126,7 +124,7 @@ public abstract class LivingEntityMixin {
             } else if (info.isEnabled(BOXING) && item.isEmpty()) {
                 double bonus = info.getBonus(BOXING);
                 if (bonus > 0) amount *= (float) (1 + bonus);
-            } else if (info.isEnabled(FENCING) && item.is(ItemTags.SWORDS)) {
+            } else if (info.isEnabled(FENCING) && item.getItem() instanceof SwordItem) {
                 double bonus = info.getBonus(FENCING);
                 if (bonus > 0) amount *= (float) (1 + bonus);
             }
@@ -134,7 +132,7 @@ public abstract class LivingEntityMixin {
         // protection
         if (entity instanceof ServerPlayer player && !player.isInvulnerableTo(source) && !player.gameMode.isCreative()) {
             SkillInfo info = SkillHelper.getInfo(player);
-            if (info.isEnabled(DODGE) && source.is(GokiTags.CAN_DODGE)) {
+            if (info.isEnabled(DODGE) && gokiskills$canProtect(source)) {
                 if (Math.random() < info.getBonus(DODGE)) {
                     player.connection.send(
                             new ClientboundSetActionBarTextPacket(
@@ -142,7 +140,7 @@ public abstract class LivingEntityMixin {
                                             .withStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))
                             )
                     );
-                    player.level().playSound(
+                    player.level.playSound(
                             null, player.getX(), player.getY(), player.getZ(),
                             SoundEvents.PLAYER_ATTACK_NODAMAGE, SoundSource.PLAYERS,
                             1.0f, 1.0f
@@ -152,16 +150,16 @@ public abstract class LivingEntityMixin {
                     return;
                 }
             }
-            if (info.isEnabled(BLAST_PROTECTION) && source.is(DamageTypeTags.IS_EXPLOSION)) {
+            if (info.isEnabled(BLAST_PROTECTION) && source.isExplosion()) {
                 double bonus = info.getBonus(BLAST_PROTECTION);
                 if (bonus > 0) amount = (float) (amount * (1 - bonus));
-            } else if (info.isEnabled(ENDOTHERMY) && (source.is(DamageTypeTags.IS_FIRE) || source.is(DamageTypeTags.IS_FREEZING))) {
+            } else if (info.isEnabled(ENDOTHERMY) && (source.isFire() || source.equals(DamageSource.FREEZE))) {
                 double bonus = info.getBonus(ENDOTHERMY);
                 if (bonus > 0) amount = (float) (amount * (1 - bonus));
-            } else if (info.isEnabled(FEATHER_FALLING) && source.is(DamageTypeTags.IS_FALL)) {
+            } else if (info.isEnabled(FEATHER_FALLING) && source.isFall()) {
                 double bonus = info.getBonus(FEATHER_FALLING);
                 if (bonus > 0) amount = Mth.floor(amount * (1 - bonus));
-            } else if (info.isEnabled(PROTECTION) && source.is(GokiTags.CAN_PROTECT)) {
+            } else if (info.isEnabled(PROTECTION) && gokiskills$canProtect(source)) {
                 double bonus = info.getBonus(PROTECTION);
                 if (bonus > 0) amount = (float) (amount * (1 - bonus));
             }
@@ -192,6 +190,16 @@ public abstract class LivingEntityMixin {
     private static void gokiskills$hurtEntity(LivingEntity entity, DamageSource source, float amount) {
         gokiskills$ignoreEntityHurt.add(entity);
         entity.hurt(source, amount);
+    }
+
+    @Unique
+    private static boolean gokiskills$canProtect(DamageSource source) {
+        return !source.isBypassArmor() ||
+                source.msgId.equals("sonic_boom") ||
+                source.equals(DamageSource.FLY_INTO_WALL) ||
+                source.equals(DamageSource.FREEZE) ||
+                source.isFall() ||
+                source.isMagic();
     }
 
 //    @Inject(method = "getFluidFallingAdjustedMovement", at = @At("RETURN"), cancellable = true)

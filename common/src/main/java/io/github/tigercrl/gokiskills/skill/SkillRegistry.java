@@ -2,6 +2,8 @@ package io.github.tigercrl.gokiskills.skill;
 
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Lifecycle;
 import io.github.tigercrl.gokiskills.GokiSkills;
 import io.github.tigercrl.gokiskills.config.ConfigUtils;
@@ -22,13 +24,19 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class SkillRegistry {
-    private static final ResourceKey<Registry<ISkill>> REGISTRY = ResourceKey.createRegistryKey(new ResourceLocation(GokiSkills.MOD_ID, "skills"));
+    public static final ResourceKey<Registry<ISkill>> REGISTRY = ResourceKey.createRegistryKey(new ResourceLocation(GokiSkills.MOD_ID, "skills"));
+    public static final Codec<ISkill> CODEC = ResourceLocation.CODEC.comapFlatMap((location) -> {
+        ISkill s = SkillRegistry.getSkill(location);
+        if (s == null) return DataResult.error("Skill not found: " + location);
+        return DataResult.success(s);
+    }, ISkill::getLocation).stable();
+
     private static Registry<ISkill> SKILL;
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public static void init(WritableRegistry<WritableRegistry<?>> writableRegistry, Map<ResourceLocation, Supplier<?>> LOADERS) {
         Lifecycle lifecycle = Lifecycle.stable();
-        SKILL = new MappedRegistry<>(SkillRegistry.REGISTRY, lifecycle, false);
+        SKILL = new MappedRegistry<>(REGISTRY, lifecycle, null);
         LOADERS.put(REGISTRY.location(), () -> Skills.bootstrap(SKILL));
         writableRegistry.register((ResourceKey<WritableRegistry<?>>) (Object) SkillRegistry.REGISTRY, (WritableRegistry<?>) SKILL, lifecycle);
     }

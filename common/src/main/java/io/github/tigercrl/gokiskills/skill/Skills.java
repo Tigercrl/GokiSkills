@@ -4,6 +4,7 @@ import io.github.tigercrl.gokiskills.GokiSkills;
 import io.github.tigercrl.gokiskills.client.gui.utils.SkillTexture;
 import io.github.tigercrl.gokiskills.client.gui.utils.SkillTextures;
 import io.github.tigercrl.gokiskills.misc.GokiUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -365,7 +366,8 @@ public class Skills {
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(new ResourceLocation("textures/block/cherry_planks.png"))
+                            .setDefaultImage(new ResourceLocation(GokiSkills.MOD_ID,
+                                    "textures/gui/background/cherry_planks.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -584,7 +586,7 @@ public class Skills {
             .setCalcBonus(level -> 0.008 * level)
             .build();
 
-    public static ISkill bootstrap(Registry<ISkill> registry) {
+    public static Holder<ISkill> bootstrap(Registry<ISkill> registry) {
         register(registry, "climbing", CLIMBING);
 //        register(registry, "fortune", FORTUNE);
         register(registry, "health", HEALTH);
@@ -610,7 +612,7 @@ public class Skills {
         register(registry, "endothermy", ENDOTHERMY);
         register(registry, "feather_falling", FEATHER_FALLING);
         register(registry, "knockback_resistence", KNOCKBACK_RESISTANCE);
-        return register(registry, "protection", PROTECTION);
+        return Holder.direct(register(registry, "protection", PROTECTION));
     }
 
     private static ISkill register(Registry<ISkill> registry, String path, ISkill skill) {
