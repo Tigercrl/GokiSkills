@@ -23,8 +23,10 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static io.github.tigercrl.gokiskills.GokiSkills.resource;
+
 public class SkillRegistry {
-    private static final ResourceKey<Registry<ISkill>> REGISTRY = ResourceKey.createRegistryKey(new ResourceLocation(GokiSkills.MOD_ID, "skills"));
+    private static final ResourceKey<Registry<ISkill>> REGISTRY = ResourceKey.createRegistryKey(resource("skills"));
     private static Registry<ISkill> SKILL;
     private static final Logger LOGGER = LogUtils.getLogger();
 

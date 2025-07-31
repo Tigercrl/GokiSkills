@@ -2,27 +2,29 @@ package io.github.tigercrl.gokiskills.skill;
 
 import dev.architectury.event.events.common.PlayerEvent;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-import java.util.UUID;
-
+import static io.github.tigercrl.gokiskills.GokiSkills.resource;
 import static io.github.tigercrl.gokiskills.skill.Skills.HEALTH;
 import static io.github.tigercrl.gokiskills.skill.Skills.KNOCKBACK_RESISTANCE;
 
 public class SkillHooks {
-    public static final UUID HEALTH_MODIFIER_UUID = UUID.fromString("ac28fc4a-8ee1-4998-87b6-cdfe8754b2d6");
-    public static final UUID KNOCKBACK_RESISTANCE_MODIFIER_UUID = UUID.fromString("44352496-cb58-4ce3-a261-facd73f08190");
-    public static final UUID NINJA_SPEED_MODIFIER_UUID = UUID.fromString("a1e60be0-0511-45a3-aa37-5b217b23c9ad");
+    public static final ResourceLocation HEALTH_SKILL_MODIFIER = resource("health_skill_modifier");
+    public static final ResourceLocation KNOCKBACK_RESISTANCE_SKILL_MODIFIER = resource("knockback_resistance_skill_modifier");
+    public static final ResourceLocation NINJA_SKILL_MODIFIER = resource("ninja_skill_modifier");
 
     public static void register() {
         PlayerEvent.PLAYER_JOIN.register(SkillHooks::updateAttributes);
-        PlayerEvent.PLAYER_RESPAWN.register((player, conqueredEnd) -> {
-            updateAttributes(player);
-            player.setHealth(player.getMaxHealth());
+        PlayerEvent.PLAYER_RESPAWN.register((player, conqueredEnd, reason) -> {
+            if (reason.shouldDestroy()) {
+                updateAttributes(player);
+                player.setHealth(player.getMaxHealth());
+            }
         });
         SkillEvents.UPDATE.register((skill, player, newLevel, oldLevel, info) -> {
             if (player instanceof ServerPlayer sp) updateAttribute(sp, info, skill);
@@ -44,8 +46,7 @@ public class SkillHooks {
                     player, info,
                     KNOCKBACK_RESISTANCE,
                     Attributes.KNOCKBACK_RESISTANCE,
-                    KNOCKBACK_RESISTANCE_MODIFIER_UUID,
-                    "GokiSkills knockback resistance",
+                    KNOCKBACK_RESISTANCE_SKILL_MODIFIER,
                     AttributeModifier.Operation.ADD_VALUE
             );
         else if (skill == HEALTH)
@@ -53,32 +54,30 @@ public class SkillHooks {
                     player, info,
                     HEALTH,
                     Attributes.MAX_HEALTH,
-                    HEALTH_MODIFIER_UUID,
-                    "GokiSkills health",
+                    HEALTH_SKILL_MODIFIER,
                     AttributeModifier.Operation.ADD_VALUE
             );
     }
 
-    public static void updateAttribute(ServerPlayer player, SkillInfo info, ISkill skill, Holder<Attribute> attribute, UUID uuid, String name, AttributeModifier.Operation operation) {
-        updateAttribute(player, info, skill, attribute, uuid, name, operation, true);
+    public static void updateAttribute(ServerPlayer player, SkillInfo info, ISkill skill, Holder<Attribute> attribute, ResourceLocation location, AttributeModifier.Operation operation) {
+        updateAttribute(player, info, skill, attribute, location, operation, true);
     }
 
-    public static void updateAttribute(ServerPlayer player, SkillInfo info, ISkill skill, Holder<Attribute> attribute, UUID uuid, String name, AttributeModifier.Operation operation, boolean condition) {
+    public static void updateAttribute(ServerPlayer player, SkillInfo info, ISkill skill, Holder<Attribute> attribute, ResourceLocation location, AttributeModifier.Operation operation, boolean condition) {
         double bonus = info.getBonus(skill);
         AttributeInstance instance = player.getAttribute(attribute);
-        AttributeModifier oldModifier = instance.getModifier(uuid);
+        AttributeModifier oldModifier = instance.getModifier(location);
         if (condition && info.isEnabled(skill) && bonus > 0) {
             if (oldModifier == null || oldModifier.amount() != bonus) {
-                instance.removeModifier(uuid);
+                instance.removeModifier(location);
                 instance.addTransientModifier(new AttributeModifier(
-                        uuid,
-                        name,
+                        location,
                         bonus,
                         operation
                 ));
             }
         } else if (oldModifier != null) {
-            instance.removeModifier(uuid);
+            instance.removeModifier(location);
         }
     }
 }
