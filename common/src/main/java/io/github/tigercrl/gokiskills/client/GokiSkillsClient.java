@@ -11,7 +11,7 @@ import io.github.tigercrl.gokiskills.client.gui.screens.SkillsMenuScreen;
 import io.github.tigercrl.gokiskills.config.CommonConfig;
 import io.github.tigercrl.gokiskills.network.C2SRequestConfigMessage;
 import io.github.tigercrl.gokiskills.network.C2SRequestSkillInfoMessage;
-import io.github.tigercrl.gokiskills.skill.SkillInfo;
+import io.github.tigercrl.gokiskills.skill.SkillHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 @Environment(EnvType.CLIENT)
 public final class GokiSkillsClient {
     public static CommonConfig serverConfig;
-    public static SkillInfo playerInfo;
     public static long lastPlayerInfoUpdated = 0;
     private static long nextSendTime = 0;
 
@@ -47,14 +46,13 @@ public final class GokiSkillsClient {
                 long now = Util.getMillis();
                 if (now > nextSendTime) {
                     if (serverConfig == null) new C2SRequestConfigMessage().sendToServer();
-                    if (playerInfo == null) new C2SRequestSkillInfoMessage().sendToServer();
+                    if (SkillHelper.getClientInfoOrNull() == null) new C2SRequestSkillInfoMessage().sendToServer();
                     nextSendTime = now + 5000;
                 }
             }
         });
         ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(player -> {
             serverConfig = null;
-            playerInfo = null;
             lastPlayerInfoUpdated = 0;
         });
         LOGGER.info("GokiSkills initialized on client!");

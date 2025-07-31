@@ -1,7 +1,7 @@
 package io.github.tigercrl.gokiskills.mixin;
 
+import io.github.tigercrl.gokiskills.skill.SkillHelper;
 import io.github.tigercrl.gokiskills.skill.SkillInfo;
-import io.github.tigercrl.gokiskills.skill.SkillManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -22,7 +22,7 @@ import static io.github.tigercrl.gokiskills.skill.Skills.*;
 public class BlockBehaviourMixin {
     @Inject(method = "getDestroyProgress", at = @At("RETURN"), cancellable = true)
     public void destroySpeedBonus(BlockState blockState, Player player, BlockGetter blockGetter, BlockPos blockPos, CallbackInfoReturnable<Float> cir) {
-        SkillInfo info = SkillManager.getInfo(player);
+        SkillInfo info = SkillHelper.getInfo(player);
         ItemStack item = player.getMainHandItem();
         double bonus = 1.0;
         if (info.isEnabled(CHOPPING) && item.is(ItemTags.AXES) && blockState.is(BlockTags.MINEABLE_WITH_AXE)) {

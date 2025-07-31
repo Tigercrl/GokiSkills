@@ -1,19 +1,17 @@
 package io.github.tigercrl.gokiskills.mixin;
 
-import io.github.tigercrl.gokiskills.skill.SkillEvents;
+import io.github.tigercrl.gokiskills.skill.SkillHelper;
+import io.github.tigercrl.gokiskills.skill.SkillHooks;
 import io.github.tigercrl.gokiskills.skill.SkillInfo;
-import io.github.tigercrl.gokiskills.skill.SkillManager;
 import io.github.tigercrl.gokiskills.skill.Skills;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public class EntityMixin {
@@ -21,12 +19,12 @@ public class EntityMixin {
     public void ninjaSpeedBonus(boolean bl, CallbackInfo ci) {
         Entity entity = (Entity) (Object) this;
         if (entity instanceof ServerPlayer player) {
-            SkillInfo info = SkillManager.getInfo(player);
-            SkillEvents.updateAttribute(
+            SkillInfo info = SkillHelper.getInfo(player);
+            SkillHooks.updateAttribute(
                     player, info,
                     Skills.NINJA,
                     Attributes.MOVEMENT_SPEED,
-                    SkillEvents.NINJA_SPEED_MODIFIER_UUID,
+                    SkillHooks.NINJA_SPEED_MODIFIER_UUID,
                     "GokiSkills ninja speed",
                     AttributeModifier.Operation.MULTIPLY_TOTAL,
                     bl

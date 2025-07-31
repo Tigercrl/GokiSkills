@@ -2,7 +2,7 @@ package io.github.tigercrl.gokiskills.config;
 
 import com.google.gson.JsonObject;
 import io.github.tigercrl.gokiskills.skill.ISkill;
-import io.github.tigercrl.gokiskills.skill.SkillManager;
+import io.github.tigercrl.gokiskills.skill.SkillRegistry;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class CommonConfig implements GokiConfig {
     public LostLevelOnDeath lostLevelOnDeath = new LostLevelOnDeath();
-    public Map<String, JsonObject> skills = SkillManager.getDefaultConfigs();
+    public Map<String, JsonObject> skills = SkillRegistry.getDefaultConfigs();
 
     public static class LostLevelOnDeath {
         public boolean enabled = false;
@@ -28,10 +28,10 @@ public class CommonConfig implements GokiConfig {
         if (lostLevelOnDeath.minLevel > lostLevelOnDeath.maxLevel)
             throw new ConfigException("Lost level on death min level cannot be greater than max level");
         skills = new HashMap<>(skills);
-        SkillManager.getDefaultConfigs().forEach((key, value) -> this.skills.putIfAbsent(key, value));
+        SkillRegistry.getDefaultConfigs().forEach((key, value) -> this.skills.putIfAbsent(key, value));
         skills.forEach((key, value) -> {
             try {
-                ISkill skill = SkillManager.SKILL.get(ResourceLocation.tryParse(key));
+                ISkill skill = SkillRegistry.getSkill(ResourceLocation.tryParse(key));
                 GokiSkillConfig config = ConfigUtils.fromJsonObject(value, skill.getConfigClass());
 
                 // v1.0.0

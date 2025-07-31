@@ -3,8 +3,7 @@ package io.github.tigercrl.gokiskills.network;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.networking.simple.BaseC2SMessage;
 import dev.architectury.networking.simple.MessageType;
-import io.github.tigercrl.gokiskills.skill.ServerSkillInfo;
-import io.github.tigercrl.gokiskills.skill.SkillManager;
+import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
 import net.fabricmc.api.EnvType;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -23,6 +22,6 @@ public class C2SRequestSkillInfoMessage extends BaseC2SMessage {
     @Override
     public void handle(NetworkManager.PacketContext context) {
         if (context.getEnv() == EnvType.SERVER)
-            ((ServerSkillInfo) SkillManager.getInfo(context.getPlayer())).sync();
+            ((GokiServerPlayer) context.getPlayer()).syncSkillInfo();
     }
 }
