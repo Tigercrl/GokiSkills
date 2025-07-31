@@ -1,8 +1,8 @@
 package io.github.tigercrl.gokiskills.skill;
 
 import io.github.tigercrl.gokiskills.GokiSkills;
-import io.github.tigercrl.gokiskills.client.gui.SkillTexture;
-import io.github.tigercrl.gokiskills.client.gui.SkillTextures;
+import io.github.tigercrl.gokiskills.client.gui.utils.SkillTexture;
+import io.github.tigercrl.gokiskills.client.gui.utils.SkillTextures;
 import io.github.tigercrl.gokiskills.client.gui.components.SkillButton;
 import io.github.tigercrl.gokiskills.config.GokiSkillConfig;
 import net.fabricmc.api.EnvType;

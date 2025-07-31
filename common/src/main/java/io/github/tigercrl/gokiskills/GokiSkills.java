@@ -9,6 +9,7 @@ import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
 import io.github.tigercrl.gokiskills.config.CommonConfig;
 import io.github.tigercrl.gokiskills.config.ConfigUtils;
 import io.github.tigercrl.gokiskills.misc.GokiPlayer;
+import io.github.tigercrl.gokiskills.network.GokiNetwork;
 import io.github.tigercrl.gokiskills.skill.SkillHooks;
 import io.github.tigercrl.gokiskills.skill.SkillRegistry;
 import net.fabricmc.api.EnvType;
@@ -42,6 +43,9 @@ public final class GokiSkills {
             return EventResult.pass();
         });
         SkillHooks.register();
+
+        // network, simply loads the class
+        GokiNetwork.NET.toString();
 
         LOGGER.info("GokiSkills initialized!");
     }
