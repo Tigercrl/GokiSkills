@@ -1,11 +1,14 @@
 package io.github.tigercrl.gokiskills.neoforge;
 
 import io.github.tigercrl.gokiskills.GokiSkills;
+import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
+import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
 import io.github.tigercrl.gokiskills.network.GokiNetwork;
 import io.github.tigercrl.gokiskills.network.payloads.*;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -16,6 +19,11 @@ public final class GokiSkillsNeoForge {
     public GokiSkillsNeoForge() {
         // Run our common setup.
         GokiSkills.init();
+    }
+
+    @SubscribeEvent
+    public static void clientSetup(FMLClientSetupEvent event) {
+        GokiSkillsClient.init();
     }
 
     @SubscribeEvent
@@ -55,7 +63,7 @@ public final class GokiSkillsNeoForge {
         registrar.playToServer(
                 C2SSkillInfoRequestPayload.TYPE,
                 C2SSkillInfoRequestPayload.STREAM_CODEC,
-                (payload, context) -> GokiNetwork.sendSkillInfoSync(context.player())
+                (payload, context) -> ((GokiServerPlayer) context.player()).syncSkillInfo()
         );
         registrar.playToClient(
                 S2CConfigSyncPayload.TYPE,

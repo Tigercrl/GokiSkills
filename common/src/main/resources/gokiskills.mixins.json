@@ -8,8 +8,10 @@
   "mixins": [
     "BlockBehaviourMixin",
     "BuiltInRegistriesMixin",
+    "EntityAccessor",
     "EntityMixin",
     "LivingEntityMixin",
+    "PlayerMixin",
     "ServerPlayerMixin"
   ],
   "injectors": {

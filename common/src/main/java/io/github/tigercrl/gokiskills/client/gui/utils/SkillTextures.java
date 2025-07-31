@@ -1,4 +1,4 @@
-package io.github.tigercrl.gokiskills.client.gui;
+package io.github.tigercrl.gokiskills.client.gui.utils;
 
 import static io.github.tigercrl.gokiskills.GokiSkills.resource;
 

@@ -1,27 +1,81 @@
 package io.github.tigercrl.gokiskills.mixin;
 
-import io.github.tigercrl.gokiskills.skill.ServerSkillInfo;
+import io.github.tigercrl.gokiskills.misc.GokiPlayer;
+import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
+import io.github.tigercrl.gokiskills.network.GokiNetwork;
+import io.github.tigercrl.gokiskills.skill.ISkill;
+import io.github.tigercrl.gokiskills.skill.SkillHelper;
 import io.github.tigercrl.gokiskills.skill.SkillInfo;
-import io.github.tigercrl.gokiskills.skill.SkillManager;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayer.class)
-public class ServerPlayerMixin {
+public abstract class ServerPlayerMixin implements GokiServerPlayer {
+    @Shadow
+    public abstract void giveExperiencePoints(int i);
+
+    @Shadow
+    public ServerGamePacketListenerImpl connection;
+
+    @Inject(method = "loadGameTypes", at = @At("TAIL"))
+    public void initSkillsInfo(CompoundTag compoundTag, CallbackInfo ci) {
+        if (compoundTag == null) { // new player
+            Player p = (Player) (Object) this;
+            SkillHelper.setSkillInfo(p, new SkillInfo(p));
+        }
+    }
+
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     public void saveSkillsInfo(CompoundTag compoundTag, CallbackInfo ci) {
-        SkillInfo info = SkillManager.getInfo((ServerPlayer) (Object) this);
-        if (info == null) info = new SkillInfo();
-        compoundTag.put("GokiSkills", info.toNbt());
+        CompoundTag tag = SkillHelper.getInfo((Player) (Object) this).toNbt();
+        if (tag != null) compoundTag.put("GokiSkills", tag);
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     public void readSkillsInfo(CompoundTag compoundTag, CallbackInfo ci) {
-        ServerPlayer player = (ServerPlayer) (Object) this;
-        SkillManager.INFOS.put(player, ServerSkillInfo.fromNbt(compoundTag.getCompound("GokiSkills")).toServerSkillInfo(player));
+        Player p = (Player) (Object) this;
+        SkillHelper.setSkillInfo(p, SkillInfo.fromNbt(p, compoundTag.getCompound("GokiSkills")));
+    }
+
+    @Inject(method = "restoreFrom", at = @At("HEAD"))
+    public void restoreFrom(ServerPlayer serverPlayer, boolean bl, CallbackInfo ci) {
+        SkillHelper.setSkillInfo((Player) (Object) this, ((GokiPlayer) serverPlayer).getSkillInfo());
+    }
+
+
+    @Override
+    @Unique
+    public void updateSkill(ISkill skill, boolean upgrade, boolean fast) {
+        ServerPlayer p = (ServerPlayer) (Object) this;
+        SkillInfo info = ((GokiPlayer) this).getSkillInfo();
+
+        int level = info.getLevel(skill);
+        int[] result = SkillHelper.calcOperation(skill, level, SkillHelper.getTotalXp(p), upgrade, fast);
+
+        info.setLevel(skill, level + result[0]);
+        giveExperiencePoints(result[1]);
+        connection.send(
+                new ClientboundSetExperiencePacket(
+                        p.experienceProgress,
+                        p.totalExperience,
+                        p.experienceLevel
+                )
+        );
+    }
+
+    @Override
+    @Unique
+    public void syncSkillInfo() {
+        ServerPlayer p = (ServerPlayer) (Object) this;
+        GokiNetwork.sendSkillInfoSync(p, SkillHelper.getInfo(p));
     }
 }

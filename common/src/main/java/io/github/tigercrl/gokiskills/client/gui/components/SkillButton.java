@@ -1,11 +1,10 @@
 package io.github.tigercrl.gokiskills.client.gui.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
 import io.github.tigercrl.gokiskills.client.gui.screens.SkillsMenuScreen;
 import io.github.tigercrl.gokiskills.network.GokiNetwork;
 import io.github.tigercrl.gokiskills.skill.Skill;
-import io.github.tigercrl.gokiskills.skill.SkillManager;
+import io.github.tigercrl.gokiskills.skill.SkillHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -25,7 +24,7 @@ public class SkillButton extends Button {
     public static final int DEFAULT_WIDTH = 24;
     public static final int DEFAULT_HEIGHT = 24;
     public static final int DEFAULT_ICON_PADDING = 4;
-    private static final Component LOADING = Component.translatable("gui.gokiskills.loading.level");
+    private static final Component LOADING = Component.translatable("gui.gokiskills.loading.skill");
     private static final Component DISABLED = Component.translatable("gui.gokiskills.disabled")
             .withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY));
     private static final Component NO_DOWNGRADE = Component.translatable("gui.gokiskills.downgrade.no")
@@ -57,29 +56,29 @@ public class SkillButton extends Button {
     public void onPress() {
         if (hasAltDown) {
             waitForUpdate = true;
-            GokiNetwork.sendSkillToggle(skill.getResourceLocation());
+            GokiNetwork.sendSkillToggle(skill.getLocation());
         } else {
-            int[] result = SkillManager.calcOperation(skill, level, SkillsMenuScreen.playerXp, !hasControlDown, hasShiftDown);
+            int[] result = SkillHelper.calcOperation(skill, level, SkillsMenuScreen.playerXp, !hasControlDown, hasShiftDown);
             if (!waitForUpdate && result[0] != 0) {
                 if (hasControlDown && hasShiftDown) {
                     if (level > skill.getMinLevel()) {
                         waitForUpdate = true;
-                        GokiNetwork.sendSkillFastDowngrade(skill.getResourceLocation());
+                        GokiNetwork.sendSkillFastDowngrade(skill.getLocation());
                     }
                 } else if (hasControlDown) {
                     if (level > skill.getMinLevel()) {
                         waitForUpdate = true;
-                        GokiNetwork.sendSkillDowngrade(skill.getResourceLocation());
+                        GokiNetwork.sendSkillDowngrade(skill.getLocation());
                     }
                 } else if (hasShiftDown) {
                     if (level < skill.getMaxLevel()) {
                         waitForUpdate = true;
-                        GokiNetwork.sendSkillFastUpgrade(skill.getResourceLocation());
+                        GokiNetwork.sendSkillFastUpgrade(skill.getLocation());
                     }
                 } else {
                     if (level < skill.getMaxLevel()) {
                         waitForUpdate = true;
-                        GokiNetwork.sendSkillUpgrade(skill.getResourceLocation());
+                        GokiNetwork.sendSkillUpgrade(skill.getLocation());
                     }
                 }
             }
@@ -89,7 +88,7 @@ public class SkillButton extends Button {
     public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
         // button
         boolean isHovered = this.isHovered();
-        boolean maxLevel = GokiSkillsClient.playerInfo.getLevel(skill.getResourceLocation(), skill.getDefaultLevel())
+        boolean maxLevel = SkillHelper.getClientInfo().getLevel(skill)
                 == skill.getMaxLevel();
         boolean operation = hasControlDown || hasShiftDown || hasAltDown;
 
@@ -139,12 +138,12 @@ public class SkillButton extends Button {
     }
 
     public void renderTooltip(GuiGraphics guiGraphics, int i, int j) {
-        boolean maxLevel = GokiSkillsClient.playerInfo.getLevel(skill.getResourceLocation(), skill.getDefaultLevel())
+        boolean maxLevel = SkillHelper.getClientInfo().getLevel(skill)
                 == skill.getMaxLevel();
         if (isHovered) {
             Component click = null;
             Component cost = null;
-            int[] result = SkillManager.calcOperation(skill, level, SkillsMenuScreen.playerXp, !hasControlDown, hasShiftDown);
+            int[] result = SkillHelper.calcOperation(skill, level, SkillsMenuScreen.playerXp, !hasControlDown, hasShiftDown);
 
             if (hasAltDown) {
                 if (enabled) click = Component.translatable("gui.gokiskills.toggle.off")
@@ -201,8 +200,8 @@ public class SkillButton extends Button {
     }
 
     public void updateLevel() {
-        level = GokiSkillsClient.playerInfo.getLevel(skill.getResourceLocation(), skill.getDefaultLevel());
-        enabled = GokiSkillsClient.playerInfo.isEnabled(skill.getResourceLocation());
+        level = SkillHelper.getClientInfo().getLevel(skill);
+        enabled = SkillHelper.getClientInfo().isEnabled(skill.getLocation());
         waitForUpdate = false;
     }
 }

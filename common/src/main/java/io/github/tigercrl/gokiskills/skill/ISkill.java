@@ -1,6 +1,5 @@
 package io.github.tigercrl.gokiskills.skill;
 
-import com.mojang.logging.LogUtils;
 import io.github.tigercrl.gokiskills.GokiSkills;
 import io.github.tigercrl.gokiskills.config.ConfigUtils;
 import io.github.tigercrl.gokiskills.config.GokiSkillConfig;
@@ -10,12 +9,9 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
 
 public interface ISkill {
-    Logger LOGGER = LogUtils.getLogger();
-
-    ResourceLocation getResourceLocation();
+    ResourceLocation getLocation();
 
     ResourceLocation getCategory(); // used to sort skills in a line
 
@@ -48,9 +44,7 @@ public interface ISkill {
 
     GokiSkillConfig getDefaultConfig();
 
-    ResourceLocation getLocation();
-
     default <T extends GokiSkillConfig> T getConfig() {
-        return (T) ConfigUtils.fromJsonObject(GokiSkills.getConfig().skills.get(getResourceLocation().toString()), getConfigClass());
+        return (T) ConfigUtils.fromJsonObject(GokiSkills.getConfig().skills.get(getLocation().toString()), getConfigClass());
     }
 }

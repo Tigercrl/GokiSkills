@@ -1,8 +1,8 @@
 package io.github.tigercrl.gokiskills.mixin;
 
-import io.github.tigercrl.gokiskills.skill.SkillEvents;
+import io.github.tigercrl.gokiskills.skill.SkillHelper;
+import io.github.tigercrl.gokiskills.skill.SkillHooks;
 import io.github.tigercrl.gokiskills.skill.SkillInfo;
-import io.github.tigercrl.gokiskills.skill.SkillManager;
 import io.github.tigercrl.gokiskills.skill.Skills;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -19,12 +19,12 @@ public class EntityMixin {
     public void ninjaSpeedBonus(boolean bl, CallbackInfo ci) {
         Entity entity = (Entity) (Object) this;
         if (entity instanceof ServerPlayer player) {
-            SkillInfo info = SkillManager.getInfo(player);
-            SkillEvents.updateAttribute(
+            SkillInfo info = SkillHelper.getInfo(player);
+            SkillHooks.updateAttribute(
                     player, info,
                     Skills.NINJA,
                     Attributes.MOVEMENT_SPEED,
-                    SkillEvents.NINJA_SKILL_MODIFIER,
+                    SkillHooks.NINJA_SKILL_MODIFIER,
                     AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL,
                     bl
             );
