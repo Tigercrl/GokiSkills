@@ -2,7 +2,7 @@ package io.github.tigercrl.gokiskills.mixin;
 
 import io.github.tigercrl.gokiskills.misc.GokiPlayer;
 import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
-import io.github.tigercrl.gokiskills.network.S2CSyncSkillInfoMessage;
+import io.github.tigercrl.gokiskills.network.GokiNetwork;
 import io.github.tigercrl.gokiskills.skill.ISkill;
 import io.github.tigercrl.gokiskills.skill.SkillHelper;
 import io.github.tigercrl.gokiskills.skill.SkillInfo;
@@ -82,6 +82,6 @@ public abstract class ServerPlayerMixin implements GokiServerPlayer {
     @Unique
     public void syncSkillInfo() {
         ServerPlayer p = (ServerPlayer) (Object) this;
-        new S2CSyncSkillInfoMessage(SkillHelper.getInfo(p)).sendTo(p);
+        GokiNetwork.sendSkillInfoSync(p, SkillHelper.getInfo(p));
     }
 }

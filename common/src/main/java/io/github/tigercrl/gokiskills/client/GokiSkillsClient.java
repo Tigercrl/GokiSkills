@@ -9,8 +9,7 @@ import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import io.github.tigercrl.gokiskills.client.gui.screens.SkillsMenuScreen;
 import io.github.tigercrl.gokiskills.config.CommonConfig;
-import io.github.tigercrl.gokiskills.network.C2SRequestConfigMessage;
-import io.github.tigercrl.gokiskills.network.C2SRequestSkillInfoMessage;
+import io.github.tigercrl.gokiskills.network.GokiNetwork;
 import io.github.tigercrl.gokiskills.skill.SkillHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -45,8 +44,8 @@ public final class GokiSkillsClient {
             if (client.level != null) {
                 long now = Util.getMillis();
                 if (now > nextSendTime) {
-                    if (serverConfig == null) new C2SRequestConfigMessage().sendToServer();
-                    if (SkillHelper.getClientInfoOrNull() == null) new C2SRequestSkillInfoMessage().sendToServer();
+                    if (serverConfig == null) GokiNetwork.sendConfigRequest();
+                    if (SkillHelper.getClientInfoOrNull() == null) GokiNetwork.sendSkillInfoRequest();
                     nextSendTime = now + 5000;
                 }
             }
@@ -55,6 +54,7 @@ public final class GokiSkillsClient {
             serverConfig = null;
             lastPlayerInfoUpdated = 0;
         });
+
         LOGGER.info("GokiSkills initialized on client!");
     }
 }

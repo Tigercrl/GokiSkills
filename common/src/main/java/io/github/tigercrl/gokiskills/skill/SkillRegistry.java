@@ -8,10 +8,12 @@ import io.github.tigercrl.gokiskills.config.ConfigUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.Bootstrap;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
@@ -26,11 +28,13 @@ public class SkillRegistry {
     private static Registry<ISkill> SKILL;
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static void init(WritableRegistry<WritableRegistry<?>> writableRegistry, Map<ResourceLocation, Supplier<?>> LOADERS) {
-        Lifecycle lifecycle = Lifecycle.stable();
-        SKILL = new MappedRegistry<>(SkillRegistry.REGISTRY, lifecycle, false);
-        LOADERS.put(REGISTRY.location(), () -> Skills.bootstrap(SKILL));
-        writableRegistry.register((ResourceKey<WritableRegistry<?>>) (Object) SkillRegistry.REGISTRY, (WritableRegistry<?>) SKILL, lifecycle);
+    public static void init(WritableRegistry<WritableRegistry<?>> WRITABLE_REGISTRY, Map<ResourceLocation, Supplier<?>> LOADERS) {
+        Bootstrap.checkBootstrapCalled(() -> "registry " + REGISTRY);
+        ResourceLocation resourceLocation = REGISTRY.location();
+        WritableRegistry<ISkill> writableRegistry = new MappedRegistry<>(REGISTRY, Lifecycle.stable(), false);
+        LOADERS.put(resourceLocation, () -> Skills.bootstrap(writableRegistry));
+        SKILL = writableRegistry;
+        WRITABLE_REGISTRY.register((ResourceKey<WritableRegistry<?>>) (Object) REGISTRY, writableRegistry, RegistrationInfo.BUILT_IN);
     }
 
     public static Map<String, JsonObject> getDefaultConfigs() {

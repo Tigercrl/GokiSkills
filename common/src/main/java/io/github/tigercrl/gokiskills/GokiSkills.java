@@ -9,12 +9,11 @@ import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
 import io.github.tigercrl.gokiskills.config.CommonConfig;
 import io.github.tigercrl.gokiskills.config.ConfigUtils;
 import io.github.tigercrl.gokiskills.misc.GokiPlayer;
-import io.github.tigercrl.gokiskills.network.GokiNetwork;
 import io.github.tigercrl.gokiskills.skill.SkillHooks;
 import io.github.tigercrl.gokiskills.skill.SkillRegistry;
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
 public final class GokiSkills {
@@ -24,10 +23,6 @@ public final class GokiSkills {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public static void init() {
-        // client
-        if (Platform.getEnv() == EnvType.CLIENT)
-            GokiSkillsClient.init();
-
         // events
         LifecycleEvent.SETUP.register(() -> {
             // config
@@ -44,9 +39,6 @@ public final class GokiSkills {
             return EventResult.pass();
         });
         SkillHooks.register();
-
-        // network, simply loads the class
-        GokiNetwork.NET.toString();
 
         LOGGER.info("GokiSkills initialized!");
     }

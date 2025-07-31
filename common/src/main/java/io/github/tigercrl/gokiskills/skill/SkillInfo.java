@@ -3,6 +3,7 @@ package io.github.tigercrl.gokiskills.skill;
 import io.github.tigercrl.gokiskills.GokiSkills;
 import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
 import io.github.tigercrl.gokiskills.misc.GokiUtils;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -20,7 +21,10 @@ import java.util.Set;
 
 public class SkillInfo {
     public static final StreamCodec<ByteBuf, SkillInfo> STREAM_CODEC =
-            ByteBufCodecs.COMPOUND_TAG.map(SkillInfo::fromNbt, SkillInfo::toNbt);
+            ByteBufCodecs.COMPOUND_TAG.map(
+                    (compoundTag) -> SkillInfo.fromNbt(null, compoundTag),
+                    SkillInfo::toNbt
+            );
 
     private static final int SCHEMA_VERSION = 1;
 
@@ -90,6 +94,7 @@ public class SkillInfo {
     }
 
     public void onDeath() {
+        System.out.println(GokiSkills.config.lostLevelOnDeath.enabled);
         if (GokiSkills.config.lostLevelOnDeath.enabled) {
             levels.forEach((key, value) -> {
                 boolean lost = Math.random() < GokiSkills.config.lostLevelOnDeath.chance;
@@ -114,32 +119,6 @@ public class SkillInfo {
         if (player instanceof GokiServerPlayer gp) {
             gp.syncSkillInfo();
         }
-    }
-
-    @Nullable
-    public CompoundTag toNbt() {
-        CompoundTag compoundTag = new CompoundTag();
-        CompoundTag levelTag = new CompoundTag();
-        levels.forEach((key, value) -> levelTag.putInt(key.toString(), value));
-        compoundTag.put("levels", levelTag);
-        ListTag disabledTag = new ListTag();
-        disabled.forEach(key -> disabledTag.add(StringTag.valueOf(key.toString())));
-        compoundTag.put("disabled", disabledTag);
-        compoundTag.putInt("schema", SCHEMA_VERSION);
-        return compoundTag;
-    }
-
-    public void writeBuf(FriendlyByteBuf buf) {
-        buf.writeMap(levels, FriendlyByteBuf::writeResourceLocation, FriendlyByteBuf::writeVarInt);
-        buf.writeCollection(disabled, FriendlyByteBuf::writeResourceLocation);
-    }
-
-    public static SkillInfo fromBuf(Player player, FriendlyByteBuf buf) {
-        return new SkillInfo(
-                player,
-                new HashMap<>(buf.readMap(FriendlyByteBuf::readResourceLocation, FriendlyByteBuf::readVarInt)),
-                buf.readCollection(HashSet::new, FriendlyByteBuf::readResourceLocation)
-        );
     }
 
     public static SkillInfo fromNbt(Player player, CompoundTag compoundTag) {

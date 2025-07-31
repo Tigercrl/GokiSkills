@@ -18,6 +18,9 @@
   "entrypoints": {
     "main": [
       "io.github.tigercrl.gokiskills.fabric.GokiSkillsFabric"
+    ],
+    "client": [
+      "io.github.tigercrl.gokiskills.fabric.GokiSkillsClientFabric"
     ]
   },
   "mixins": [

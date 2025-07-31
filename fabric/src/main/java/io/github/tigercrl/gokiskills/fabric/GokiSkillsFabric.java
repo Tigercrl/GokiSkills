@@ -1,10 +1,10 @@
 package io.github.tigercrl.gokiskills.fabric;
 
 import io.github.tigercrl.gokiskills.GokiSkills;
+import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
 import io.github.tigercrl.gokiskills.network.GokiNetwork;
 import io.github.tigercrl.gokiskills.network.payloads.*;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
@@ -85,15 +85,7 @@ public final class GokiSkillsFabric implements ModInitializer {
         );
         ServerPlayNetworking.registerGlobalReceiver(
                 C2SSkillInfoRequestPayload.TYPE,
-                (payload, context) -> GokiNetwork.sendSkillInfoSync(context.player())
-        );
-        ClientPlayNetworking.registerGlobalReceiver(
-                S2CConfigSyncPayload.TYPE,
-                (payload, context) -> GokiNetwork.handleConfigSync(payload)
-        );
-        ClientPlayNetworking.registerGlobalReceiver(
-                S2CSkillInfoSyncPayload.TYPE,
-                (payload, context) -> GokiNetwork.handleSkillInfoSync(payload)
+                (payload, context) -> ((GokiServerPlayer) context.player()).syncSkillInfo()
         );
     }
 }

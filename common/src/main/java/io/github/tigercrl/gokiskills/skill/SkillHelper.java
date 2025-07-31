@@ -102,7 +102,7 @@ public class SkillHelper {
     public static void setClientSkillInfo(SkillInfo skillInfo) {
         Player player = Minecraft.getInstance().player;
         if (player != null) {
-            setSkillInfo(player, skillInfo);
+            setSkillInfo(player, SkillInfo.fromNbt(player, skillInfo.toNbt()));
         }
     }
 }
