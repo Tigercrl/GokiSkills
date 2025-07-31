@@ -1,19 +1,18 @@
 package io.github.tigercrl.gokiskills.skill;
 
-import io.github.tigercrl.gokiskills.client.gui.SkillTexture;
-import io.github.tigercrl.gokiskills.client.gui.SkillTextures;
+import io.github.tigercrl.gokiskills.GokiSkills;
+import io.github.tigercrl.gokiskills.client.gui.utils.SkillTexture;
+import io.github.tigercrl.gokiskills.client.gui.utils.SkillTextures;
 import io.github.tigercrl.gokiskills.misc.GokiUtils;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import static io.github.tigercrl.gokiskills.GokiSkills.resource;
-
 public class Skills {
-    private static final ResourceLocation abilityCategory = resource("1_ability");
-    private static final ResourceLocation breakingCategory = resource("3_breaking");
-    private static final ResourceLocation professionCategory = resource("2_profession");
-    private static final ResourceLocation protectionCategory = resource("4_protection");
+    private static final ResourceLocation abilityCategory = new ResourceLocation(GokiSkills.MOD_ID, "1_ability");
+    private static final ResourceLocation breakingCategory = new ResourceLocation(GokiSkills.MOD_ID, "3_breaking");
+    private static final ResourceLocation professionCategory = new ResourceLocation(GokiSkills.MOD_ID, "2_profession");
+    private static final ResourceLocation protectionCategory = new ResourceLocation(GokiSkills.MOD_ID, "4_protection");
 
     public static final ISkill CLIMBING = new Skill.Builder()
             .setCategory(abilityCategory)
@@ -45,7 +44,8 @@ public class Skills {
             .setMaxLevel(3)
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(resource("textures/gui/icon/goki.png"))
+                            .setDefaultImage(new ResourceLocation(GokiSkills.MOD_ID,
+                                    "textures/gui/icon/goki.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -66,7 +66,8 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.RED))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(resource("textures/gui/icon/instant_health.png"))
+                            .setDefaultImage(new ResourceLocation(GokiSkills.MOD_ID,
+                                    "textures/gui/icon/instant_health.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -92,7 +93,8 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.WHITE))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(resource("textures/gui/icon/leaper.png"))
+                            .setDefaultImage(new ResourceLocation(GokiSkills.MOD_ID,
+                                    "textures/gui/icon/leaper.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -122,7 +124,8 @@ public class Skills {
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(resource("textures/gui/background/water.png"))
+                            .setDefaultImage(new ResourceLocation(GokiSkills.MOD_ID,
+                                    "textures/gui/background/water.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -312,7 +315,8 @@ public class Skills {
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(resource("textures/gui/background/archer.png"))
+                            .setDefaultImage(new ResourceLocation(GokiSkills.MOD_ID,
+                                    "textures/gui/background/archer.png"))
                             .setTextureSize(24)
                             .build()
             )
@@ -330,7 +334,8 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.RED))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(resource("textures/gui/icon/boxing.png"))
+                            .setDefaultImage(new ResourceLocation(GokiSkills.MOD_ID,
+                                    "textures/gui/icon/boxing.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -378,7 +383,8 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.BLACK))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(resource("textures/gui/icon/ninja.png"))
+                            .setDefaultImage(new ResourceLocation(GokiSkills.MOD_ID,
+                                    "textures/gui/icon/ninja.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -403,7 +409,8 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.RED))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(resource("textures/gui/icon/sickle.png"))
+                            .setDefaultImage(new ResourceLocation(GokiSkills.MOD_ID,
+                                    "textures/gui/icon/sickle.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -429,7 +436,8 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.RED))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(resource("textures/gui/icon/creeper.png"))
+                            .setDefaultImage(new ResourceLocation(GokiSkills.MOD_ID,
+                                    "textures/gui/icon/creeper.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -454,13 +462,15 @@ public class Skills {
             .setFrame(SkillTextures.getFrame(SkillTextures.FrameColor.WHITE))
             .setIcon(
                     new SkillTexture.Builder()
-                            .setDefaultImage(resource("textures/gui/icon/wind_charged.png"))
+                            .setDefaultImage(new ResourceLocation(GokiSkills.MOD_ID,
+                                    "textures/gui/icon/wind_charged.png"))
                             .setTextureSize(16)
                             .build()
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(resource("textures/gui/background/pale_oak_planks.png"))
+                            .setDefaultImage(new ResourceLocation(GokiSkills.MOD_ID,
+                                    "textures/gui/background/pale_oak_planks.png"))
                             .setTextureSize(16)
                             .build()
             )
@@ -604,6 +614,6 @@ public class Skills {
     }
 
     private static ISkill register(Registry<ISkill> registry, String path, ISkill skill) {
-        return Registry.register(registry, resource(path), skill);
+        return Registry.register(registry, new ResourceLocation(GokiSkills.MOD_ID, path), skill);
     }
 }

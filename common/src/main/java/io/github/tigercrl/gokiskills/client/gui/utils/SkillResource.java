@@ -1,4 +1,4 @@
-package io.github.tigercrl.gokiskills.client.gui;
+package io.github.tigercrl.gokiskills.client.gui.utils;
 
 public class SkillResource<T> {
     private final T defaultItem;

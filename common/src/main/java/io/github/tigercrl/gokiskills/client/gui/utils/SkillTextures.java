@@ -1,4 +1,4 @@
-package io.github.tigercrl.gokiskills.client.gui;
+package io.github.tigercrl.gokiskills.client.gui.utils;
 
 import io.github.tigercrl.gokiskills.GokiSkills;
 import net.minecraft.resources.ResourceLocation;
