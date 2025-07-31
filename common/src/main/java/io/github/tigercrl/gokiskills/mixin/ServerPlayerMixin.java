@@ -46,12 +46,6 @@ public abstract class ServerPlayerMixin implements GokiServerPlayer {
         SkillHelper.setSkillInfo(p, SkillInfo.fromNbt(p, compoundTag.getCompound("GokiSkills")));
     }
 
-    @Inject(method = "die", at = @At("HEAD"))
-    public void onDeath(CallbackInfo ci) {
-        ((GokiPlayer) this).getSkillInfo().onDeath();
-        syncSkillInfo();
-    }
-
     @Inject(method = "restoreFrom", at = @At("HEAD"))
     public void restoreFrom(ServerPlayer serverPlayer, boolean bl, CallbackInfo ci) {
         SkillHelper.setSkillInfo((Player) (Object) this, ((GokiPlayer) serverPlayer).getSkillInfo());
