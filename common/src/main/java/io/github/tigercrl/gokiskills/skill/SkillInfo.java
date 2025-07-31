@@ -94,7 +94,6 @@ public class SkillInfo {
     }
 
     public void onDeath() {
-        System.out.println(GokiSkills.config.lostLevelOnDeath.enabled);
         if (GokiSkills.config.lostLevelOnDeath.enabled) {
             levels.forEach((key, value) -> {
                 boolean lost = Math.random() < GokiSkills.config.lostLevelOnDeath.chance;

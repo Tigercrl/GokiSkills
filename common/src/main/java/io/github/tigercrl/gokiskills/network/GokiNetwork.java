@@ -2,7 +2,6 @@ package io.github.tigercrl.gokiskills.network;
 
 import io.github.tigercrl.gokiskills.GokiSkills;
 import io.github.tigercrl.gokiskills.client.GokiSkillsClient;
-import io.github.tigercrl.gokiskills.misc.GokiServerPlayer;
 import io.github.tigercrl.gokiskills.network.payloads.*;
 import io.github.tigercrl.gokiskills.skill.SkillHelper;
 import io.github.tigercrl.gokiskills.skill.SkillInfo;
@@ -13,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 
 import static io.github.tigercrl.gokiskills.Platform.sendC2SPayload;
 import static io.github.tigercrl.gokiskills.Platform.sendS2CPayload;
+import static io.github.tigercrl.gokiskills.skill.SkillHelper.updateSkill;
 
 public class GokiNetwork {
     public static void sendSkillDowngrade(ResourceLocation location) {
@@ -52,19 +52,19 @@ public class GokiNetwork {
     }
 
     public static void handleSkillDowngrade(C2SSkillDowngradePayload payload, Player p) {
-        ((GokiServerPlayer) p).updateSkill(payload.location(), false, false);
+        updateSkill(p, payload.location(), false, false);
     }
 
     public static void handleSkillUpgrade(C2SSkillUpgradePayload payload, Player p) {
-        ((GokiServerPlayer) p).updateSkill(payload.location(), true, false);
+        updateSkill(p, payload.location(), true, false);
     }
 
     public static void handleSkillFastDowngrade(C2SSkillFastDowngradePayload payload, Player p) {
-        ((GokiServerPlayer) p).updateSkill(payload.location(), false, true);
+        updateSkill(p, payload.location(), false, true);
     }
 
     public static void handleSkillFastUpgrade(C2SSkillFastUpgradePayload payload, Player p) {
-        ((GokiServerPlayer) p).updateSkill(payload.location(), true, true);
+        updateSkill(p, payload.location(), true, true);
     }
 
     public static void handleSkillToggle(C2SSkillTogglePayload payload, Player p) {
