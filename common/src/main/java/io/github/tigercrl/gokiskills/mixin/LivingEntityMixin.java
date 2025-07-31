@@ -1,8 +1,8 @@
 package io.github.tigercrl.gokiskills.mixin;
 
 import io.github.tigercrl.gokiskills.misc.GokiTags;
+import io.github.tigercrl.gokiskills.skill.SkillHelper;
 import io.github.tigercrl.gokiskills.skill.SkillInfo;
-import io.github.tigercrl.gokiskills.skill.SkillManager;
 import io.github.tigercrl.gokiskills.skill.Skills;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -53,7 +53,7 @@ public abstract class LivingEntityMixin {
     public void climbBonus(Vec3 vec3, float f, CallbackInfoReturnable<Vec3> cir) {
         Entity entity = (Entity) (Object) this;
         if (entity instanceof Player player) {
-            SkillInfo info = SkillManager.getInfo(player);
+            SkillInfo info = SkillHelper.getInfo(player);
             if (info.isEnabled(Skills.CLIMBING) &&
                     (entity.horizontalCollision || jumping) &&
                     (
@@ -74,15 +74,13 @@ public abstract class LivingEntityMixin {
     public void jumpBonus(CallbackInfo ci) {
         Entity entity = (Entity) (Object) this;
         if (entity instanceof Player player) {
-            SkillInfo info = SkillManager.getInfo(player);
-            if (player.isSprinting()) {
-                double jumpBoostBonus = info.isEnabled(Skills.JUMP_BOOST) ? info.getBonus(Skills.JUMP_BOOST) : 0;
-                double leaperBonus = info.isEnabled(Skills.LEAPER) ? info.getBonus(Skills.LEAPER) : 0;
-                player.setDeltaMovement(
-                        player.getDeltaMovement()
-                                .multiply(leaperBonus + 1, jumpBoostBonus + 1, leaperBonus + 1)
-                );
-            }
+            SkillInfo info = SkillHelper.getInfo(player);
+            double jumpBoostBonus = info.isEnabled(Skills.JUMP_BOOST) ? info.getBonus(Skills.JUMP_BOOST) : 0;
+            double leaperBonus = info.isEnabled(Skills.LEAPER) ? info.getBonus(Skills.LEAPER) : 0;
+            player.setDeltaMovement(
+                    player.getDeltaMovement()
+                            .multiply(leaperBonus + 1, jumpBoostBonus + 1, leaperBonus + 1)
+            );
         }
     }
 
@@ -96,12 +94,13 @@ public abstract class LivingEntityMixin {
         }
         // profession
         if (source.getEntity() instanceof ServerPlayer player) {
-            SkillInfo info = SkillManager.getInfo(player);
+            SkillInfo info = SkillHelper.getInfo(player);
             ItemStack item = player.getMainHandItem();
             if (info.isEnabled(ONE_HIT)) {
                 double bonus = info.getBonus(ONE_HIT);
                 if (entity.getHealth() < entity.getMaxHealth() * 0.4 * bonus && Math.random() < bonus) {
-                    gokiskills$hurtEntity(entity, source, Float.MAX_VALUE);
+                    entity.setHealth(0);
+                    entity.die(source);
                     player.connection.send(
                             new ClientboundSetActionBarTextPacket(
                                     Component.translatable("skill.gokiskills.one_hit.message")
@@ -134,7 +133,7 @@ public abstract class LivingEntityMixin {
         }
         // protection
         if (entity instanceof ServerPlayer player && !player.isInvulnerableTo(source) && !player.gameMode.isCreative()) {
-            SkillInfo info = SkillManager.getInfo(player);
+            SkillInfo info = SkillHelper.getInfo(player);
             if (info.isEnabled(DODGE) && source.is(GokiTags.CAN_DODGE)) {
                 if (Math.random() < info.getBonus(DODGE)) {
                     player.connection.send(
@@ -148,7 +147,9 @@ public abstract class LivingEntityMixin {
                             SoundEvents.PLAYER_ATTACK_NODAMAGE, SoundSource.PLAYERS,
                             1.0f, 1.0f
                     );
+                    ((EntityAccessor) this).setInvulnerableTime(20);
                     cir.setReturnValue(false);
+                    return;
                 }
             }
             if (info.isEnabled(BLAST_PROTECTION) && source.is(DamageTypeTags.IS_EXPLOSION)) {
@@ -175,7 +176,7 @@ public abstract class LivingEntityMixin {
     @Inject(method = "calculateFallDamage", at = @At("RETURN"), cancellable = true)
     public void jumpBoostDamage(float f, float g, CallbackInfoReturnable<Integer> cir) {
         if ((LivingEntity) (Object) this instanceof Player p && cir.getReturnValue() > 0) {
-            SkillInfo info = SkillManager.getInfo(p);
+            SkillInfo info = SkillHelper.getInfo(p);
             if (info.isEnabled(Skills.JUMP_BOOST)) {
                 double bonus = info.getBonus(Skills.JUMP_BOOST);
                 if (bonus > 0) {

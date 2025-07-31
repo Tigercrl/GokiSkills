@@ -1,8 +1,5 @@
 package io.github.tigercrl.gokiskills.misc;
 
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
-
 public class GokiUtils {
     public static String doubleToString(double d, int decimalPlaces) {
         return String.format("%." + decimalPlaces + "f", d);
@@ -16,7 +13,7 @@ public class GokiUtils {
         return min + (int) (Math.random() * (max - min));
     }
 
-    private static int getXpNeededForNextLevel(int level) {
+    public static int getXpNeededForNextLevel(int level) {
         if (level >= 30) {
             return 112 + (level - 30) * 9;
         } else {
@@ -30,10 +27,5 @@ public class GokiUtils {
             sum += getXpNeededForNextLevel(i);
         }
         return sum;
-    }
-
-    public static int getPlayerTotalXp(Player player) {
-        return getTotalXpNeededForLevel(player.experienceLevel) +
-                Mth.floor(player.experienceProgress * getXpNeededForNextLevel(player.experienceLevel));
     }
 }
