@@ -7,6 +7,7 @@ import io.github.tigercrl.gokiskills.misc.GokiUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class Skills {
@@ -30,9 +31,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.climbing.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.climbing.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.climbing.desc",
                             GokiUtils.doubleToString(bonus * 100, 2)
                     )
@@ -56,8 +57,8 @@ public class Skills {
                             .setTextureSize(24)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.fortune.name"))
-            .setDescription((level, bonus) -> Component.translatable("skill.gokiskills.fortune.desc"))
+            .setName(new TranslatableComponent("skill.gokiskills.fortune.name"))
+            .setDescription((level, bonus) -> new TranslatableComponent("skill.gokiskills.fortune.desc"))
             .setCalcCost(level -> 25 * Math.pow(level, 2) + 25 * level + 100)
             .build();
 
@@ -78,9 +79,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.health.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.health.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.health.desc",
                             GokiUtils.doubleToString(bonus, 0)
                     )
@@ -105,9 +106,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.leaper.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.leaper.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.leaper.desc",
                             GokiUtils.doubleToString(bonus * 100, 2)
                     )
@@ -130,9 +131,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.swimming.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.swimming.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.swimming.desc",
                             GokiUtils.doubleToString(bonus * 100, 2),
                             GokiUtils.doubleToString(bonus * 25, 2)
@@ -155,9 +156,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.jump_boost.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.jump_boost.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.jump_boost.desc",
                             GokiUtils.doubleToString(bonus * 100, 2)
                     )
@@ -179,9 +180,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.chopping.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.chopping.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.chopping.desc",
                             GokiUtils.doubleToString(bonus * 100, 2)
                     )
@@ -202,9 +203,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.digging.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.digging.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.digging.desc",
                             GokiUtils.doubleToString(bonus * 100, 2)
                     )
@@ -226,9 +227,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.harvesting.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.harvesting.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.harvesting.desc",
                             GokiUtils.doubleToString(bonus * 100, 2)
                     )
@@ -249,9 +250,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.mining.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.mining.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.mining.desc",
                             GokiUtils.doubleToString(bonus * 100, 2)
                     )
@@ -272,9 +273,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.shearing.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.shearing.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.shearing.desc",
                             GokiUtils.doubleToString(bonus * 100, 2)
                     )
@@ -296,9 +297,9 @@ public class Skills {
                             .setTextureSize(24)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.alchemy.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.alchemy.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.alchemy.desc",
                             GokiUtils.doubleToString(bonus * 100, 2)
                     )
@@ -321,9 +322,9 @@ public class Skills {
                             .setTextureSize(24)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.archer.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.archer.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.archer.desc",
                             GokiUtils.doubleToString(bonus * 100, 2)
                     )
@@ -346,9 +347,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.boxing.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.boxing.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.boxing.desc",
                             GokiUtils.doubleToString(bonus * 100, 2)
                     )
@@ -371,9 +372,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.fencing.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.fencing.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.fencing.desc",
                             GokiUtils.doubleToString(bonus * 100, 2)
                     )
@@ -396,9 +397,9 @@ public class Skills {
                             .setTextureSize(24)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.ninja.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.ninja.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.ninja.desc",
                             GokiUtils.doubleToString(bonus * 100, 2),
                             GokiUtils.doubleToString(bonus * 25, 2)
@@ -422,9 +423,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.one_hit.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.one_hit.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.one_hit.desc",
                             GokiUtils.doubleToString(Math.min(bonus * 100, 100), 2),
                             GokiUtils.doubleToString(Math.min(bonus * 40, 100), 2)
@@ -449,9 +450,9 @@ public class Skills {
                             .setTextureSize(24)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.blast_protection.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.blast_protection.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.blast_protection.desc",
                             GokiUtils.doubleToString(Math.min(bonus * 100, 100), 2)
                     )
@@ -476,9 +477,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.dodge.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.dodge.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.dodge.desc",
                             GokiUtils.doubleToString(Math.min(bonus * 100, 100), 2)
                     )
@@ -501,9 +502,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.endothermy.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.endothermy.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.endothermy.desc",
                             GokiUtils.doubleToString(Math.min(bonus * 100, 100), 2)
                     )
@@ -526,9 +527,9 @@ public class Skills {
                             .setTextureSize(16)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.feather_falling.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.feather_falling.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.feather_falling.desc",
                             GokiUtils.doubleToString(Math.min(bonus * 100, 100), 2)
                     )
@@ -551,9 +552,9 @@ public class Skills {
                             .setTextureSize(24)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.knockback_resistence.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.knockback_resistence.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.knockback_resistence.desc",
                             GokiUtils.doubleToString(Math.min(bonus * 100, 100), 2)
                     )
@@ -576,9 +577,9 @@ public class Skills {
                             .setTextureSize(24)
                             .build()
             )
-            .setName(Component.translatable("skill.gokiskills.protection.name"))
+            .setName(new TranslatableComponent("skill.gokiskills.protection.name"))
             .setDescription((level, bonus) ->
-                    Component.translatable(
+                    new TranslatableComponent(
                             "skill.gokiskills.protection.desc",
                             GokiUtils.doubleToString(Math.min(bonus * 100, 100), 2)
                     )

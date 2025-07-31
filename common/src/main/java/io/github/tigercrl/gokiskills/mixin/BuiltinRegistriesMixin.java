@@ -24,7 +24,7 @@ public class BuiltinRegistriesMixin {
     @Final
     private static Map<ResourceLocation, Supplier<?>> LOADERS;
 
-    @Inject(method = "<clinit>", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/BuiltinRegistries;registerSimple(Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/data/BuiltinRegistries$RegistryBootstrap;)Lnet/minecraft/core/Registry;", ordinal = 1))
+    @Inject(method = "<clinit>", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/BuiltinRegistries;registerSimple(Lnet/minecraft/resources/ResourceKey;Ljava/util/function/Supplier;)Lnet/minecraft/core/Registry;", ordinal = 1))
     private static void initSkillRegistry(CallbackInfo ci) {
         SkillRegistry.init(WRITABLE_REGISTRY, LOADERS);
     }

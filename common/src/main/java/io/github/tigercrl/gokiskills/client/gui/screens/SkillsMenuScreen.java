@@ -9,17 +9,18 @@ import io.github.tigercrl.gokiskills.skill.SkillRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
-import net.minecraft.client.gui.screens.LoadingDotsText;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class SkillsMenuScreen extends Screen {
-    private static final Component LOADING = Component.translatable("gui.gokiskills.loading.menu");
-    private static final Component LEFT_BOTTOM = System.getProperty("os.name").toLowerCase().contains("mac") ? Component.translatable("gui.gokiskills.help.macos") : Component.translatable("gui.gokiskills.help");
+    private static final Component LOADING = new TranslatableComponent("gui.gokiskills.loading.menu");
+    private static final Component LEFT_BOTTOM = System.getProperty("os.name").toLowerCase().contains("mac") ? new TranslatableComponent("gui.gokiskills.help.macos") : new TranslatableComponent("gui.gokiskills.help");
     public static final int HORIZONTAL_SPACING = 10;
     public static final int VERTICAL_SPACING = HORIZONTAL_SPACING + 7;
 
@@ -30,7 +31,7 @@ public class SkillsMenuScreen extends Screen {
     private boolean loaded = false;
 
     public SkillsMenuScreen(Screen parent) {
-        super(Component.translatable("gui.gokiskills.title"));
+        super(new TranslatableComponent("gui.gokiskills.title"));
         this.parent = parent;
     }
 
@@ -97,12 +98,24 @@ public class SkillsMenuScreen extends Screen {
         SkillButton.hasAltDown = hasAltDown();
 
         if (!loaded) {
-            String s = LoadingDotsText.get(Util.getMillis());
+            String s;
+            switch ((int) (Util.getMillis() / 300L % 4L)) {
+                case 0:
+                default:
+                    s = "O o o";
+                    break;
+                case 1:
+                case 3:
+                    s = "o O o";
+                    break;
+                case 2:
+                    s = "o o O";
+            }
             drawCenteredString(poseStack, font, s, width / 2, height / 2 - 6, 8421504);
             drawCenteredString(poseStack, font, LOADING, width / 2, height / 2 + 6, 16777215);
         } else {
             super.render(poseStack, i, j, f);
-            Component[] leftBottoms = Arrays.stream(LEFT_BOTTOM.getString().split("\n")).map(Component::literal).toArray(Component[]::new);
+            Component[] leftBottoms = Arrays.stream(LEFT_BOTTOM.getString().split("\n")).map(TextComponent::new).toArray(Component[]::new);
             for (int k = 0; k < leftBottoms.length; k++) {
                 drawString(
                         poseStack, font, leftBottoms[k], 5,
@@ -110,7 +123,7 @@ public class SkillsMenuScreen extends Screen {
                         16777215
                 );
             }
-            Component RIGHT_BOTTOM = Component.translatable("gui.gokiskills.xp", SkillHelper.getClientTotalXp());
+            Component RIGHT_BOTTOM = new TranslatableComponent("gui.gokiskills.xp", SkillHelper.getClientTotalXp());
             drawString(poseStack, font, RIGHT_BOTTOM, width - font.width(RIGHT_BOTTOM) - 4, height - font.lineHeight - 4, 16777215);
             // tooltip
             for (int k = 0; k < children().size(); k++) {

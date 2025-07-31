@@ -4,8 +4,8 @@ import io.github.tigercrl.gokiskills.skill.SkillHelper;
 import io.github.tigercrl.gokiskills.skill.SkillInfo;
 import io.github.tigercrl.gokiskills.skill.Skills;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -101,7 +101,7 @@ public abstract class LivingEntityMixin {
                     entity.die(source);
                     player.connection.send(
                             new ClientboundSetActionBarTextPacket(
-                                    Component.translatable("skill.gokiskills.one_hit.message")
+                                    new TranslatableComponent("skill.gokiskills.one_hit.message")
                                             .withStyle(Style.EMPTY.withColor(ChatFormatting.RED))
                             )
                     );
@@ -110,7 +110,7 @@ public abstract class LivingEntityMixin {
                             SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.PLAYERS,
                             1.0f, 1.0f
                     );
-                    player.playSound(SoundEvents.PLAYER_ATTACK_CRIT);
+                    player.playSound(SoundEvents.PLAYER_ATTACK_CRIT, 1, 1);
                     cir.setReturnValue(true);
                 }
             }
@@ -136,7 +136,7 @@ public abstract class LivingEntityMixin {
                 if (Math.random() < info.getBonus(DODGE)) {
                     player.connection.send(
                             new ClientboundSetActionBarTextPacket(
-                                    Component.translatable("skill.gokiskills.dodge.message")
+                                    new TranslatableComponent("skill.gokiskills.dodge.message")
                                             .withStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))
                             )
                     );
