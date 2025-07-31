@@ -77,7 +77,7 @@ public class SkillHooks {
                 ));
             }
         } else if (oldModifier != null) {
-            instance.removeModifier(oldModifier);
+            instance.removeModifier(uuid);
         }
     }
 }
