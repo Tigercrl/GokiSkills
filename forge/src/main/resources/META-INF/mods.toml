@@ -12,7 +12,7 @@ description = '''
 Unlock and upgrade your skills by experience points!
 '''
 displayURL = "https://modrinth.com/mod/gokiskills"
-logoFile = "assets/gokiskills/icon.png"
+logoFile = "icon.png"
 
 [[dependencies.gokiskills]]
 modId = "forge"
