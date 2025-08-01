@@ -52,7 +52,7 @@ public class SkillRegistry {
     }
 
     public static ISkill getSkill(ResourceLocation location) {
-        return SKILL.get(location);
+        return SKILL.get(location).orElseThrow().value();
     }
 
     public static ResourceLocation getLocation(ISkill skill) {

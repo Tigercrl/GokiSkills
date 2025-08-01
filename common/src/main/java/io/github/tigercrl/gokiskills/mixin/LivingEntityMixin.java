@@ -10,6 +10,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -123,8 +124,8 @@ public abstract class LivingEntityMixin {
         }
     }
 
-    @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
-    public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "hurtServer", at = @At("HEAD"), cancellable = true)
+    public void hurt(ServerLevel level, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         LivingEntity entity = (LivingEntity) (Object) this;
         float old = amount;
         if (gokiskills$ignoreEntityHurt.contains(entity)) {
@@ -171,7 +172,7 @@ public abstract class LivingEntityMixin {
             }
         }
         // protection
-        if (entity instanceof ServerPlayer player && !player.isInvulnerableTo(source) && !player.gameMode.isCreative()) {
+        if (entity instanceof ServerPlayer player && !player.isInvulnerableTo(level, source) && !player.gameMode.isCreative()) {
             SkillInfo info = SkillHelper.getInfo(player);
             if (info.isEnabled(DODGE) && source.is(GokiTags.CAN_DODGE)) {
                 if (Math.random() < info.getBonus(DODGE)) {
@@ -208,7 +209,7 @@ public abstract class LivingEntityMixin {
         if (amount == old) {
             return;
         }
-        gokiskills$hurtEntity(entity, source, amount);
+        gokiskills$hurtEntity(level, entity, source, amount);
         cir.setReturnValue(true);
     }
 
@@ -228,9 +229,9 @@ public abstract class LivingEntityMixin {
     }
 
     @Unique
-    private static void gokiskills$hurtEntity(LivingEntity entity, DamageSource source, float amount) {
+    private static void gokiskills$hurtEntity(ServerLevel level, LivingEntity entity, DamageSource source, float amount) {
         gokiskills$ignoreEntityHurt.add(entity);
-        entity.hurt(source, amount);
+        entity.hurtServer(level, source, amount);
     }
 
 //    @Inject(method = "getFluidFallingAdjustedMovement", at = @At("RETURN"), cancellable = true)

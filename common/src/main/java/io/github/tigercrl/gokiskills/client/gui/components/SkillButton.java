@@ -11,6 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -95,22 +96,25 @@ public class SkillButton extends Button {
         RenderSystem.enableBlend(); // enable transparency
         // bg
         guiGraphics.blit(
+                RenderType::guiTextured,
                 skill.getBackground().getItem(isHovered, maxLevel, operation),
                 this.getX(), this.getY(),
-                0, 0, 0, width, height,
+                0, 0, width, height,
                 skill.getBackground().getTextureWidth(),
                 skill.getBackground().getTextureHeight()
         );
         // overlay
         guiGraphics.blit(
+                RenderType::guiTextured,
                 skill.getOverlay().getItem(isHovered, maxLevel, operation),
                 this.getX(), this.getY(),
-                0, 0, 0, width, height,
+                0, 0, width, height,
                 skill.getOverlay().getTextureWidth(),
                 skill.getOverlay().getTextureHeight()
         );
         // icon
         guiGraphics.blit(
+                RenderType::guiTextured,
                 skill.getIcon().getItem(isHovered, maxLevel, operation),
                 this.getX() + DEFAULT_ICON_PADDING, this.getY() + DEFAULT_ICON_PADDING,
                 0, 0, width - DEFAULT_ICON_PADDING * 2, height - DEFAULT_ICON_PADDING * 2,
@@ -119,9 +123,10 @@ public class SkillButton extends Button {
         );
         // frame
         guiGraphics.blit(
+                RenderType::guiTextured,
                 skill.getFrame().getItem(isHovered, maxLevel, operation),
                 this.getX() - 1, this.getY() - 1,
-                0, 0, 0, width + 2, height + 2,
+                0, 0, width + 2, height + 2,
                 skill.getFrame().getTextureWidth(),
                 skill.getFrame().getTextureHeight()
         );

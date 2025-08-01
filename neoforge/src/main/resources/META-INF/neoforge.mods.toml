@@ -21,20 +21,20 @@ config = "gokiskills.mixins.json"
 [[dependencies.gokiskills]]
 modId = "neoforge"
 mandatory = true
-versionRange = "[4,)"
+versionRange = "[21,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.gokiskills]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.21,1.21.1]"
+versionRange = "[1.21.2,1.21.3]"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.gokiskills]]
 modId = "architectury"
 mandatory = true
-versionRange = "[13.0.8,)"
+versionRange = "[14.0.4,)"
 ordering = "AFTER"
 side = "BOTH"
