@@ -21,10 +21,8 @@ public class SkillHooks {
     public static void register() {
         PlayerEvent.PLAYER_JOIN.register(SkillHooks::updateAttributes);
         PlayerEvent.PLAYER_RESPAWN.register((player, conqueredEnd, reason) -> {
-            if (reason.shouldDestroy()) {
-                updateAttributes(player);
-                player.setHealth(player.getMaxHealth());
-            }
+            updateAttributes(player);
+            player.setHealth(player.getMaxHealth());
         });
         SkillEvents.UPDATE.register((skill, player, newLevel, oldLevel, info) -> {
             if (player instanceof ServerPlayer sp) updateAttribute(sp, info, skill);
