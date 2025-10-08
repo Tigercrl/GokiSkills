@@ -28,13 +28,13 @@ side = "BOTH"
 [[dependencies.gokiskills]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.21.2,1.21.3]"
+versionRange = "[1.21.4,1.21.5)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.gokiskills]]
 modId = "architectury"
 mandatory = true
-versionRange = "[14.0.4,)"
+versionRange = "[15.0.3,)"
 ordering = "AFTER"
 side = "BOTH"

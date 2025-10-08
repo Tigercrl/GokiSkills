@@ -460,7 +460,7 @@ public class Skills {
             )
             .setBackground(
                     new SkillTexture.Builder()
-                            .setDefaultImage(resource("textures/gui/background/pale_oak_planks.png"))
+                            .setDefaultImage(ResourceLocation.withDefaultNamespace("textures/block/pale_oak_planks.png"))
                             .setTextureSize(16)
                             .build()
             )
