@@ -1,6 +1,5 @@
 package io.github.tigercrl.gokiskills.client.gui.components;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.tigercrl.gokiskills.client.gui.screens.SkillsMenuScreen;
 import io.github.tigercrl.gokiskills.network.GokiNetwork;
 import io.github.tigercrl.gokiskills.skill.Skill;
@@ -93,7 +92,6 @@ public class SkillButton extends Button {
                 == skill.getMaxLevel();
         boolean operation = hasControlDown || hasShiftDown || hasAltDown;
 
-        RenderSystem.enableBlend(); // enable transparency
         // bg
         guiGraphics.blit(
                 RenderType::guiTextured,
@@ -130,7 +128,6 @@ public class SkillButton extends Button {
                 skill.getFrame().getTextureWidth(),
                 skill.getFrame().getTextureHeight()
         );
-        RenderSystem.disableBlend();
 
         // level
         guiGraphics.drawCenteredString(

@@ -7,17 +7,13 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SkillInfo {
     public static final StreamCodec<ByteBuf, SkillInfo> STREAM_CODEC =
@@ -123,17 +119,20 @@ public class SkillInfo {
     public static SkillInfo fromNbt(Player player, CompoundTag compoundTag) {
         Map<ResourceLocation, Integer> levels = new HashMap<>();
         Set<ResourceLocation> disabled = new HashSet<>();
-        if (compoundTag.contains("schema")) {
-            switch (compoundTag.getInt("schema")) {
-                case 1:
+        try {
+            compoundTag.getInt("schema").ifPresentOrElse(schema -> {
+                switch (schema) {
+                    case 1:
+                        readVer1(compoundTag, levels, disabled);
+                }
+            }, () -> {
+                if (compoundTag.contains("levels")) {
                     readVer1(compoundTag, levels, disabled);
-            }
-        } else {
-            if (compoundTag.contains("levels")) {
-                readVer1(compoundTag, levels, disabled);
-            } else {
-                readVer0(compoundTag, levels);
-            }
+                } else {
+                    readVer0(compoundTag, levels);
+                }
+            });
+        } catch (NoSuchElementException ignored) {
         }
         return new SkillInfo(player, levels, disabled);
     }
@@ -151,13 +150,13 @@ public class SkillInfo {
     }
 
     private static void readVer0(CompoundTag compoundTag, Map<ResourceLocation, Integer> levels) {
-        compoundTag.getAllKeys().forEach(key -> levels.put(ResourceLocation.tryParse(key), compoundTag.getInt(key)));
+        compoundTag.keySet().forEach(key -> levels.put(ResourceLocation.tryParse(key), compoundTag.getInt(key).get()));
     }
 
     private static void readVer1(CompoundTag compoundTag, Map<ResourceLocation, Integer> levels, Set<ResourceLocation> disabled) {
-        CompoundTag levelTag = compoundTag.getCompound("levels");
-        levelTag.getAllKeys().forEach(key -> levels.put(ResourceLocation.tryParse(key), levelTag.getInt(key)));
+        CompoundTag levelTag = compoundTag.getCompound("levels").get();
+        levelTag.keySet().forEach(key -> levels.put(ResourceLocation.tryParse(key), levelTag.getInt(key).get()));
         if (compoundTag.contains("disabled"))
-            compoundTag.getList("disabled", Tag.TAG_STRING).forEach(tag -> disabled.add(ResourceLocation.tryParse(tag.getAsString())));
+            compoundTag.getList("disabled").get().forEach(tag -> disabled.add(ResourceLocation.tryParse(tag.asString().get())));
     }
 }

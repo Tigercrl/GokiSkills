@@ -6,7 +6,6 @@ import io.github.tigercrl.gokiskills.skill.SkillInfo;
 import io.github.tigercrl.gokiskills.skill.Skills;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
@@ -70,11 +69,10 @@ public abstract class LivingEntityMixin {
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     public void readHealth(CompoundTag compoundTag, CallbackInfo ci) {
         if ((LivingEntity) (Object) this instanceof Player) {
-            if (compoundTag.contains("Health", Tag.TAG_ANY_NUMERIC)) {
-                float health = compoundTag.getFloat("Health");
+            compoundTag.getFloat("Health").ifPresent(health -> {
                 if (getMaxHealth() < health && health <= attributes.getValue(Attributes.MAX_HEALTH))
                     gokiskills$savedHealth = health;
-            }
+            });
         }
     }
 
@@ -214,15 +212,15 @@ public abstract class LivingEntityMixin {
     }
 
     @Inject(method = "calculateFallDamage", at = @At("RETURN"), cancellable = true)
-    public void jumpBoostDamage(float f, float g, CallbackInfoReturnable<Integer> cir) {
+    public void jumpBoostDamage(double d, float f, CallbackInfoReturnable<Integer> cir) {
         if ((LivingEntity) (Object) this instanceof Player p && cir.getReturnValue() > 0) {
             SkillInfo info = SkillHelper.getInfo(p);
             if (info.isEnabled(Skills.JUMP_BOOST)) {
                 double bonus = info.getBonus(Skills.JUMP_BOOST);
                 if (bonus > 0) {
-                    MobEffectInstance mobEffectInstance = p.getEffect(MobEffects.JUMP);
+                    MobEffectInstance mobEffectInstance = p.getEffect(MobEffects.JUMP_BOOST);
                     int h = mobEffectInstance == null ? 0 : mobEffectInstance.getAmplifier() + 1;
-                    cir.setReturnValue(Mth.ceil((f - 3 - h - 3.5 * bonus) * g));
+                    cir.setReturnValue(Mth.ceil((d - 3 - h - 3.5 * bonus) * f));
                 }
             }
         }

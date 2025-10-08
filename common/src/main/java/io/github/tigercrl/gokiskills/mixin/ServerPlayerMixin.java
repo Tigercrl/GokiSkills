@@ -43,7 +43,7 @@ public abstract class ServerPlayerMixin implements GokiServerPlayer {
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     public void readSkillsInfo(CompoundTag compoundTag, CallbackInfo ci) {
         Player p = (Player) (Object) this;
-        SkillHelper.setSkillInfo(p, SkillInfo.fromNbt(p, compoundTag.getCompound("GokiSkills")));
+        SkillHelper.setSkillInfo(p, SkillInfo.fromNbt(p, compoundTag.getCompound("GokiSkills").orElse(new CompoundTag())));
     }
 
     @Inject(method = "restoreFrom", at = @At("HEAD"))
